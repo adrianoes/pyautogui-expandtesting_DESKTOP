@@ -1,28 +1,27 @@
-import pyautogui
 import subprocess
 import time
+import pyautogui
 import pyperclip
 import json
 import os
 
 # Test case function for pytest
 def test_curl_response():
-    # Open the Command Prompt (CMD)
-    subprocess.Popen("cmd.exe", shell=True)
-    time.sleep(5)  # Wait for the CMD window to open
+    # Open Git Bash using subprocess without needing to click
+    subprocess.Popen("start bash.exe", shell=True)  # Opens Git Bash
+    time.sleep(5)  # Wait for the Bash window to open
 
-    # Click on the CMD window (adjust the coordinates as necessary)
-    pyautogui.click(x=1180, y=1050)
-    time.sleep(5)
-    pyautogui.hotkey("win", "up")  # Maximize the terminal window
-    time.sleep(2)
-    pyautogui.click(x=800, y=450)
-    time.sleep(2)
+    # Maximize the terminal window by sending Alt + Space, then X
+    pyautogui.hotkey("alt", "space")  # Open window control menu
+    time.sleep(0.5)
+    pyautogui.press("x")  # Maximize the window
+    time.sleep(1)  # Allow the window to maximize
 
     # Type the curl command and press Enter
     command = "curl -X 'GET' 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json'"
     pyperclip.copy(command)  # Copy the command to the clipboard
     time.sleep(1)
+    # Use pyautogui to paste and run the command in Git Bash
     pyautogui.hotkey("ctrl", "v")  # Paste the command
     pyautogui.press("enter")  # Execute the command
 
@@ -44,7 +43,7 @@ def test_curl_response():
     if start != -1 and end != -1:
         json_response = copied_text[start : end + 1]  # Extract JSON
     else:
-        json_response = "{}"  # Default empty JSON if not found
+        json_response = "{}"  # Empty JSON as fallback if not found
 
     # Ensure the 'resources' directory exists
     resources_dir = "resources"
@@ -68,4 +67,10 @@ def test_curl_response():
     assert status == 200, f"Expected status=200 but got {status}"
     assert message == "Notes API is Running", f"Expected message='Notes API is Running' but got {message}"
 
-    os.remove(json_path)  # Delete testdata.json
+    # Delete the testdata.json file after the test
+    if os.path.exists(json_path):
+        os.remove(json_path)
+        print(f"File {json_path} has been deleted.")
+    
+    # Close the terminal (Git Bash)
+    pyautogui.hotkey("alt", "f4")  # Sends Alt+F4 to close the window
