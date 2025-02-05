@@ -1,2 +1,7 @@
 pyautogui
 pyperclip
+pytest
+Faker
+pytest-html
+
+
