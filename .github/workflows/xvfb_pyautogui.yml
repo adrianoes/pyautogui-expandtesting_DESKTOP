@@ -26,15 +26,16 @@ jobs:
       - name: Set up graphical environment
         run: |
           export DISPLAY=:99
-          Xvfb :99 -screen 0 1920x1080x24 &
+          Xvfb :99 -screen 0 1920x1080x24 &  # Inicializa Xvfb com a tela virtual
           sleep 3
 
           touch ~/.Xauthority
           xauth generate :99 . trusted
           export XAUTHORITY=$HOME/.Xauthority
 
-          fluxbox > /dev/null 2>&1 &  
-          sleep 3  
+          # Usando o fluxbox para a gerência de janelas, mas vamos inicializar de forma mais explícita
+          fluxbox -display :99 &
+          sleep 3  # Espera o Fluxbox carregar completamente
 
       - name: Create reports directory
         run: mkdir -p reports
@@ -48,13 +49,13 @@ jobs:
       - name: Start recording screen
         run: |
           export DISPLAY=:99
-          ffmpeg -y -f x11grab -video_size 1920x1080 -i :99 -r 25 -pix_fmt yuv420p reports/test_recording.mp4 &
-          echo $! > ffmpeg_pid.txt  
+          ffmpeg -y -f x11grab -video_size 1920x1080 -i :99 -r 25 -pix_fmt yuv420p reports/test_recording.mp4 & # Captura a tela
+          echo $! > ffmpeg_pid.txt
 
       - name: Run Pytest (executa o teste que abrirá o terminal)
         run: |
           export DISPLAY=:99
-          pytest ./tests -v --html=./reports/report.html --self-contained-html  
+          pytest ./tests -v --html=./reports/report.html --self-contained-html
         shell: /usr/bin/bash -e {0}
 
       - name: Capture final screen
