@@ -1,4 +1,4 @@
-name: Run PyAutoGUI Tests with Xvfb (With Video & Screenshots)
+name: Run PyAutoGUI Tests with Xvfb
 
 on:
     push:
@@ -9,53 +9,53 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: |
-          sudo apt update
-          sudo apt install -y xvfb x11-apps xdotool x11-utils xterm ffmpeg
-          python -m pip install --upgrade pip
+          sudo apt-get update
+          sudo apt-get install -y xvfb imagemagick ffmpeg openbox xfce4-terminal xdotool
           pip install pyautogui pyperclip pytest Faker pytest-html
-          pip install pyvirtualdisplay
 
-      - name: Start Xvfb
+      - name: Start Xvfb and Openbox
         run: |
-          Xvfb :99 -screen 0 1920x1080x24 &  # Create a 1920x1080 display
+          Xvfb :99 -screen 0 1920x1080x24 &
           export DISPLAY=:99
           echo "DISPLAY=:99" >> $GITHUB_ENV
+          openbox-session &  # Inicia um ambiente gráfico para interagir
 
-      - name: Start Display Recording
+      - name: Create reports directory
+        run: mkdir -p reports
+
+      - name: Start screen recording
         run: |
           ffmpeg -y -f x11grab -video_size 1920x1080 -i :99 -r 25 -pix_fmt yuv420p reports/test_recording.mp4 &
           echo $! > ffmpeg_pid.txt  # Save the PID to stop later
 
-      - name: Capture Screenshot Before Test
+      - name: Capture screenshot before test
         run: import -window root reports/before_test.png
 
-      - name: Install and Launch Git Bash
+      - name: Open Terminal and Simulate Click
         run: |
-          sudo apt install -y git
-          bash --version
-          xterm &  # Open a graphical terminal (replace if needed)
+          sleep 3  # Esperar Openbox iniciar
+          xfce4-terminal &  # Abre o terminal
+          sleep 3  # Tempo para o terminal abrir
+          xdotool mousemove 50 50 click 1  # Simula clique na posição do ícone do terminal
 
-      - name: Run Tests with pytest
-        run: |
-          pytest ./tests -v --html=./reports/report.html --self-contained-html
+      - name: Run PyAutoGUI tests
+        run: pytest ./tests -v --html=./reports/report.html --self-contained-html
 
-      - name: Capture Screenshot After Test
+      - name: Capture screenshot after test
         run: import -window root reports/after_test.png
 
-      - name: Stop Display Recording
+      - name: Stop screen recording
         run: |
-          kill $(cat ffmpeg_pid.txt) || true  # Stop ffmpeg process
+          kill $(cat ffmpeg_pid.txt)
 
-      - name: Upload Artifacts (Screenshots, Video, and Report)
-        if: always()
+      - name: Upload test artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: test-artifacts
+          name: test-results
           path: reports/
