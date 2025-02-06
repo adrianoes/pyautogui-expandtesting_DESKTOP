@@ -8,7 +8,10 @@ import os
 # Test case function for pytest
 def test_curl_response():
     # Open Git Bash using subprocess without needing to click
-    subprocess.Popen("start bash.exe", shell=True)  # Opens Git Bash
+    # subprocess.Popen("start bash.exe", shell=True)  # Opens Terminal configured as Git Bash 
+    subprocess.Popen(["gnome-terminal", "--", "bash", "-c", "your-command; exec bash"])  # to commit in github actions workflow
+    # subprocess.Popen(["xterm", "-e", "your-command"]) #other alternative 
+
     time.sleep(5)  # Wait for the Bash window to open
 
     # Maximize the terminal window by sending Alt + Space, then X
