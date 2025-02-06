@@ -19,28 +19,27 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y xclip 
-          sudo apt install -y xvfb x11-utils xdotool xauth ffmpeg imagemagick python3-tk fluxbox xterm tmux
+          sudo apt install -y xclip xvfb x11-utils xdotool xauth ffmpeg imagemagick python3-tk fluxbox xterm
           python3 -m pip install --upgrade pip
-          python3 -m pip install pytest pyautogui pyperclip Faker pytest-html 
+          python3 -m pip install pytest pyautogui pyperclip Faker pytest-html
 
       - name: Set up graphical environment
         run: |
           export DISPLAY=:99
           Xvfb :99 -screen 0 1920x1080x24 &
-          sleep 3  # Aguarda o Xvfb iniciar
+          sleep 3
 
           touch ~/.Xauthority
           xauth generate :99 . trusted
           export XAUTHORITY=$HOME/.Xauthority
 
-          fluxbox > /dev/null 2>&1 &  # Inicia um gerenciador de janelas leve
-          sleep 3  # Aguarda carregar
+          fluxbox > /dev/null 2>&1 &  
+          sleep 3  
 
       - name: Create reports directory
         run: mkdir -p reports
 
-      - name: Capture initial screen (for debugging)
+      - name: Capture initial screen
         run: |
           export DISPLAY=:99
           import -window root reports/before_test.png
@@ -55,8 +54,8 @@ jobs:
       - name: Open terminal and run test
         run: |
           export DISPLAY=:99
-          xterm -geometry 100x30+100+100 -hold -e "tmux new-session -d 'pytest ./tests -v --html=./reports/report.html --self-contained-html && read -p PressEnterToExit'" &
-          sleep 5  # Aguarda o terminal abrir
+          xterm -geometry 100x30+100+100 -hold -e "pytest ./tests -v --html=./reports/report.html --self-contained-html" &
+          sleep 10  
         shell: /usr/bin/bash -e {0}
 
       - name: Capture final screen

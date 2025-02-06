@@ -1,4 +1,3 @@
-import subprocess
 import time
 import pyautogui
 import pyperclip
@@ -6,64 +5,51 @@ import json
 import os
 import re
 
-# Test case function for pytest
 def test_curl_response():
-    # Run curl directly without opening a graphical terminal
-    command = ["curl", "-X", "GET", "https://practice.expandtesting.com/notes/api/health-check", "-H", "accept: application/json"]
-    
-    # Execute the curl command and get the response
-    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdout, stderr = process.communicate()
+    # Abre o terminal com atalho
+    pyautogui.hotkey("ctrl", "alt", "t")
+    time.sleep(2)  # Espera o terminal abrir
 
-    # If there is an error, print the error message
-    if stderr:
-        print("Error executing the curl command:", stderr.decode())
-    
-    # Decode the response to text
-    response = stdout.decode()
-    
-    # Debugging: print the curl response
-    print("Curl response is:")
+    # Digita o comando no terminal e executa
+    command = "curl -X GET 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json'"
+    pyautogui.write(command)
+    pyautogui.press("enter")
+
+    # Espera o terminal exibir a resposta do curl
+    time.sleep(5)  
+
+    # Copia a resposta do terminal
+    pyautogui.hotkey("ctrl", "shift", "c")
+    time.sleep(1)  
+
+    # Obtém a resposta copiada
+    response = pyperclip.paste()
+
+    # Debug: Exibe a resposta copiada
+    print("Curl response copied from terminal:")
     print(response)
-    
-    # Espera 5 segundos para garantir que a resposta fique visível na gravação
-    time.sleep(5)
 
-    # Regular expression to find a valid JSON in the response text
+    # Expressão regular para capturar o JSON
     json_match = re.search(r'({.*})', response, re.DOTALL)
+    json_response = json_match.group(0) if json_match else "{}"
 
-    if json_match:
-        json_response = json_match.group(0)  # Extracts the JSON
-    else:
-        json_response = "{}"  # If no JSON is found, set an empty JSON
-
-    # Ensure that the 'resources' directory exists
+    # Salva o JSON no arquivo
     resources_dir = "resources"
     os.makedirs(resources_dir, exist_ok=True)
-
-    # Save the JSON response to the testdata.json file
     json_path = os.path.join(resources_dir, "testdata.json")
     with open(json_path, "w", encoding="utf-8") as json_file:
         json.dump(json.loads(json_response), json_file, indent=4)
 
-    # Read the JSON file and extract variables
+    # Lê o JSON salvo e faz asserções
     with open(json_path, "r", encoding="utf-8") as json_file:
         data = json.load(json_file)
 
-    success = data.get("success")
-    status = data.get("status")
-    message = data.get("message")
+    assert data.get("success") == True
+    assert data.get("status") == 200
+    assert data.get("message") == "Notes API is Running"
 
-    # Perform assertions to validate the response
-    assert success == True, f"Expected success=True but got {success}"
-    assert status == 200, f"Expected status=200 but got {status}"
-    assert message == "Notes API is Running", f"Expected message='Notes API is Running' but got {message}"
+    # Remove o arquivo JSON após o teste
+    os.remove(json_path)
 
-    # Delete the testdata.json file after the test
-    if os.path.exists(json_path):
-        os.remove(json_path)
-        print(f"File {json_path} has been deleted.")
-    
-    # Here you can still continue with the graphical automation if needed
-    # Close the terminal or any other interaction that needs to be done
-    pyautogui.hotkey("alt", "f4")  # Sends Alt+F4 to close the window
+    # Fecha o terminal
+    pyautogui.hotkey("alt", "f4")
