@@ -1,64 +1,64 @@
-name: Run PyAutoGUI Tests with Xvfb
+name: Run PyAutoGUI Tests
 
 on:
-    push:
-      branches: [ "main" ]
-    pull_request:
-      branches: [ "main" ]
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   test:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
+      - name: Checkout do código
         uses: actions/checkout@v4
 
-      - name: Install dependencies
+      - name: Instalar dependências
         run: |
-          sudo apt-get update
-          sudo apt-get install -y xvfb imagemagick ffmpeg openbox xfce4-terminal xdotool
-          pip install pyautogui pyperclip pytest Faker pytest-html
+          sudo apt update
+          sudo apt install -y xvfb x11-utils xdotool xauth ffmpeg xfce4-terminal
 
-      - name: Start Xvfb and Openbox
+      - name: Configurar ambiente gráfico
         run: |
-          Xvfb :99 -screen 0 1920x1080x24 -ac &
           export DISPLAY=:99
-          echo "DISPLAY=:99" >> $GITHUB_ENV
-          echo "XAUTHORITY=" >> $GITHUB_ENV  # Evita erro de ~/.Xauthority
-          sleep 2  # Tempo para Xvfb iniciar
-          openbox-session &  # Inicia ambiente gráfico
+          Xvfb :99 -screen 0 1920x1080x24 & 
+          sleep 2  # Esperar o Xvfb estabilizar
 
-      - name: Create reports directory
-        run: mkdir -p reports
+          xauth generate :99 . trusted
+          export XAUTHORITY=$HOME/.Xauthority
+          touch $XAUTHORITY
 
-      - name: Start screen recording
+      - name: Iniciar gravação de tela
         run: |
-          sleep 2  # Esperar Openbox e Xvfb estabilizarem
+          export DISPLAY=:99
           ffmpeg -y -f x11grab -video_size 1920x1080 -i :99 -r 25 -probesize 50M -analyzeduration 100M -pix_fmt yuv420p reports/test_recording.mp4 &
           echo $! > ffmpeg_pid.txt  # Salvar PID para encerrar depois
+        shell: /usr/bin/bash -e {0}
 
-      - name: Capture screenshot before test
-        run: import -window root reports/before_test.png
-
-      - name: Open Terminal and Simulate Click
+      - name: Capturar tela inicial
         run: |
-          sleep 5  # Tempo extra para evitar problemas
-          xfce4-terminal &  # Abre o terminal
-          sleep 5  # Esperar terminal abrir completamente
-          xdotool mousemove 50 50 click 1  # Simula clique na posição do terminal
+          export DISPLAY=:99
+          import -window root reports/before_test.png
+        shell: /usr/bin/bash -e {0}
 
-      - name: Run PyAutoGUI tests
-        run: pytest ./tests -v --html=./reports/report.html --self-contained-html
-
-      - name: Capture screenshot after test
-        run: import -window root reports/after_test.png
-
-      - name: Stop screen recording
+      - name: Executar testes com PyAutoGUI
         run: |
-          kill $(cat ffmpeg_pid.txt)
+          export DISPLAY=:99
+          pytest ./tests -v --html=./reports/report.html --self-contained-html
+        shell: /usr/bin/bash -e {0}
 
-      - name: Upload test artifacts (Screenshots & Video)
+      - name: Encerrar gravação de tela
+        run: |
+          if [ -f ffmpeg_pid.txt ]; then
+            kill $(cat ffmpeg_pid.txt) || true
+          fi
+        shell: /usr/bin/bash -e {0}
+
+      - name: Upload do relatório de testes
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
-          path: reports/
+          name: test-report
+          path: reports/report.html
