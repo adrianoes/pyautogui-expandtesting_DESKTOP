@@ -1,68 +1,69 @@
-name: Test Workflow
+name: Run PyAutoGUI Tests
 
 on:
   push:
+    branches:
+      - main
+  pull_request:
     branches:
       - main
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    
-    steps:
-      # Step 1: Checkout do código
-      - name: Checkout code
-        uses: actions/checkout@v4  # Atualizado para v4
 
-      # Step 2: Instalar dependências
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v4
+
       - name: Install dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y xvfb ffmpeg x11-utils
-          pip install -r requirements.txt  # Instala as dependências do projeto
-          pip install pytest-html  # Instalar o plugin do pytest para gerar HTML
+          sudo apt update
+          sudo apt install -y xvfb x11-utils xdotool xauth ffmpeg imagemagick xfce4-terminal
+          python3 -m pip install --upgrade pip
+          python3 -m pip install pytest pyautogui pyperclip Faker pytest-html  # Install all dependencies at once
 
-      # Step 3: Configurar o servidor X virtual (Xvfb)
-      - name: Start Xvfb
+      - name: Set up graphical environment
         run: |
           export DISPLAY=:99
-          Xvfb :99 -screen 0 1920x1080x24 &  # Inicia o Xvfb em segundo plano
-          sleep 2  # Aguarda um pouco para estabilizar
-
-      # Step 4: Criar e configurar o Xauthority
-      - name: Setup Xauthority
-        run: |
+          Xvfb :99 -screen 0 1920x1080x24 &  # Start Xvfb in the background
+          sleep 2  # Wait for Xvfb to stabilize
+          # Create and configure Xauthority manually
           touch ~/.Xauthority
           xauth generate :99 . trusted
           export XAUTHORITY=$HOME/.Xauthority
 
-      # Step 5: Iniciar a captura de tela com ffmpeg
-      - name: Start screen capture with ffmpeg
+      - name: Create reports directory
+        run: mkdir -p reports
+
+      - name: Start screen recording
         run: |
           export DISPLAY=:99
-          ffmpeg -y -f x11grab -video_size 1920x1080 -i :99 -r 25 -probesize 50M -analyzeduration 100M -pix_fmt yuv420p reports/test_recording.mp4 &  # Inicia a captura de tela
-          echo $! > ffmpeg_pid.txt  # Salva o PID do ffmpeg para encerrar depois
+          ffmpeg -y -f x11grab -video_size 1920x1080 -i :99 -r 25 -probesize 50M -analyzeduration 100M -pix_fmt yuv420p reports/test_recording.mp4 &  # Start screen capture
+          echo $! > ffmpeg_pid.txt  # Save PID for later termination
+        shell: /usr/bin/bash -e {0}
 
-      # Step 6: Tirar uma captura de tela antes de rodar os testes
-      - name: Capture screenshot before tests
+      - name: Capture initial screen
         run: |
           export DISPLAY=:99
           import -window root reports/before_test.png
+        shell: /usr/bin/bash -e {0}
 
-      # Step 7: Rodar os testes com pytest e gerar relatório HTML
-      - name: Run tests with pytest
+      - name: Run tests with PyAutoGUI
         run: |
           export DISPLAY=:99
-          pytest ./tests -v --html=./reports/report.html --self-contained-html  # Rodar os testes e gerar o relatório HTML
+          pytest ./tests -v --html=./reports/report.html --self-contained-html  # Run tests and generate HTML report
+        shell: /usr/bin/bash -e {0}
 
-      # Step 8: Finalizar a captura de tela com ffmpeg
-      - name: Stop ffmpeg process
+      - name: Stop screen recording
         run: |
-          kill $(cat ffmpeg_pid.txt)  # Finaliza o processo ffmpeg
+          if [ -f ffmpeg_pid.txt ]; then
+            kill $(cat ffmpeg_pid.txt) || true  # Terminate ffmpeg process
+          fi
+        shell: /usr/bin/bash -e {0}
 
-      # Step 9: Salvar artefatos de teste
-      - name: Upload test artifacts
+      - name: Upload test report
         uses: actions/upload-artifact@v4
         with:
-          name: test-artifacts
-          path: reports/  # Salva os relatórios gerados (imagem e HTML)
+          name: test-report
+          path: reports/  # Upload generated reports (image and HTML)
