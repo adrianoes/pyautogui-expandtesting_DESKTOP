@@ -16,13 +16,12 @@ def test_curl_response():
     pyautogui.press("enter")
 
     # Espera o terminal exibir a resposta do curl
-    time.sleep(60)  
+    time.sleep(60)   
 
     # Copia a resposta do terminal
     pyautogui.hotkey("ctrl", "shift", "c")
-    time.sleep(1) 
     
-    time.sleep(20)
+    time.sleep(60)
 
     # Obtém a resposta copiada
     response = pyperclip.paste()
