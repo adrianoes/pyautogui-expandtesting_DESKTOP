@@ -20,7 +20,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y xclip  # xclip is useful to manipulate clipboard
-          sudo apt install -y xvfb x11-utils xdotool xauth ffmpeg imagemagick python3-tk  # Install tkinter
+          sudo apt install -y xvfb x11-utils xdotool xauth ffmpeg imagemagick python3-tk openbox  # Install tkinter and Openbox
           python3 -m pip install --upgrade pip
           python3 -m pip install pytest pyautogui pyperclip Faker pytest-html  # Install dependencies
 
@@ -28,19 +28,27 @@ jobs:
         run: |
           export DISPLAY=:99
           Xvfb :99 -screen 0 1920x1080x24 &  # Starts Xvfb in background
-          sleep 2  # Aguarda Xvfb estabilizar
-          # Create and configure Xauthority manually
+          sleep 2  # Wait for Xvfb to stabilize
+          
+          # Configure Xauthority manually
           touch ~/.Xauthority
           xauth generate :99 . trusted
           export XAUTHORITY=$HOME/.Xauthority
+          
+          # Start Openbox window manager
+          openbox-session &
+          sleep 2  # Wait for Openbox to initialize
 
       - name: Create reports directory
         run: mkdir -p reports
 
+      - name: Verify DISPLAY environment (Debugging)
+        run: echo "DISPLAY is set to $DISPLAY"
+
       - name: Start screen recording
         run: |
           export DISPLAY=:99
-          ffmpeg -y -f x11grab -video_size 1920x1080 -i :99 -r 25 -probesize 50M -analyzeduration 100M -pix_fmt yuv420p reports/test_recording.mp4 &  # Inicia captura de tela
+          ffmpeg -y -f x11grab -video_size 1920x1080 -i :99 -r 25 -probesize 50M -analyzeduration 100M -pix_fmt yuv420p reports/test_recording.mp4 &  # Start screen recording
           echo $! > ffmpeg_pid.txt  # Save PID for later termination
         shell: /usr/bin/bash -e {0}
 
@@ -67,4 +75,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-report
-          path: reports/  
+          path: reports/
