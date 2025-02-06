@@ -26,6 +26,9 @@ def test_curl_response():
     print("Curl response is:")
     print(response)
     
+    # Espera 5 segundos para garantir que a resposta fique visível na gravação
+    time.sleep(5)
+
     # Regular expression to find a valid JSON in the response text
     json_match = re.search(r'({.*})', response, re.DOTALL)
 
