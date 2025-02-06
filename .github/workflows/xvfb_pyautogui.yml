@@ -20,7 +20,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y xclip 
-          sudo apt install -y xvfb x11-utils xdotool xauth ffmpeg imagemagick python3-tk fluxbox xterm 
+          sudo apt install -y xvfb x11-utils xdotool xauth ffmpeg imagemagick python3-tk fluxbox xterm tmux
           python3 -m pip install --upgrade pip
           python3 -m pip install pytest pyautogui pyperclip Faker pytest-html 
 
@@ -37,9 +37,6 @@ jobs:
           fluxbox > /dev/null 2>&1 &  # Inicia um gerenciador de janelas leve
           sleep 3  # Aguarda carregar
 
-          xterm -geometry 80x24+0+0 -hold -e "echo 'Testing UI...'" &  # Abre um terminal gráfico visível no Xvfb
-          sleep 3  # Garante que algo seja renderizado na tela
-
       - name: Create reports directory
         run: mkdir -p reports
 
@@ -49,14 +46,17 @@ jobs:
           import -window root reports/before_test.png
         shell: /usr/bin/bash -e {0}
 
-      - name: Run tests with PyAutoGUI
+      - name: Start recording screen
         run: |
           export DISPLAY=:99
           ffmpeg -y -f x11grab -video_size 1920x1080 -i :99 -r 25 -pix_fmt yuv420p reports/test_recording.mp4 &
           echo $! > ffmpeg_pid.txt  
 
-          pytest ./tests -v --html=./reports/report.html --self-contained-html  
-
+      - name: Open terminal and run test
+        run: |
+          export DISPLAY=:99
+          xterm -geometry 100x30+100+100 -hold -e "tmux new-session -d 'pytest ./tests -v --html=./reports/report.html --self-contained-html && read -p PressEnterToExit'" &
+          sleep 5  # Aguarda o terminal abrir
         shell: /usr/bin/bash -e {0}
 
       - name: Capture final screen
