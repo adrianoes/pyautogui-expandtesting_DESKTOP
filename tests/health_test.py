@@ -8,43 +8,26 @@ import re
 
 # Test case function for pytest
 def test_curl_response():
-    # Abrir o terminal bash diretamente
-    subprocess.Popen(["bash", "-c", "echo 'Terminal Bash aberto'"])  # Inicia o bash com um comando simples
+    # Executar o curl diretamente sem abrir um terminal gráfico
+    command = ["curl", "-X", "GET", "https://practice.expandtesting.com/notes/api/health-check", "-H", "accept: application/json"]
+    
+    # Executar o comando curl e obter a resposta
+    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout, stderr = process.communicate()
 
-    time.sleep(5)  # Esperar o terminal abrir
-
-    # Maximize the terminal window by sending Alt + Space, then X
-    pyautogui.hotkey("alt", "space")  # Abre o menu de controle da janela
-    time.sleep(0.5)
-    pyautogui.press("x")  # Maximiza a janela
-    time.sleep(1)  # Aguarda o tempo necessário para maximizar
-
-    # Digitar o comando curl e pressionar Enter
-    command = "curl -X 'GET' 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json'"
-    pyperclip.copy(command)  # Copia o comando para a área de transferência
-    time.sleep(1)
-    # Usar pyautogui para colar e executar o comando no terminal
-    pyautogui.hotkey("ctrl", "v")  # Cola o comando
-    pyautogui.press("enter")  # Executa o comando
-
-    # Espera pela resposta do comando
-    time.sleep(10)
-
-    # Seleciona e copia a resposta do terminal
-    pyautogui.hotkey("ctrl", "shift", "a")  # Seleciona todo o texto
-    time.sleep(2)  # Garantir que a seleção foi feita
-    pyautogui.hotkey("ctrl", "c")  # Copia a seleção
-    time.sleep(2)  # Garantir que a cópia foi concluída
-
-    # Recupera o texto copiado
-    copied_text = pyperclip.paste()
-
-    # Depuração: imprime o texto copiado para verificar
-    print("Texto copiado do terminal:")
-    print(copied_text)
-
-    # Expressão regular para encontrar um JSON válido no texto copiado
-    json_match = re.search(r'({.*})', copied_text, re.DOTALL)
+    # Se houver erro, imprima a mensagem de erro
+    if stderr:
+        print("Erro ao executar o comando curl:", stderr.decode())
+    
+    # Decodifique a resposta para texto
+    response = stdout.decode()
+    
+    # Depuração: imprime a resposta do curl
+    print("Resposta do curl:")
+    print(response)
+    
+    # Expressão regular para encontrar um JSON válido no texto da resposta
+    json_match = re.search(r'({.*})', response, re.DOTALL)
 
     if json_match:
         json_response = json_match.group(0)  # Extrai o JSON
@@ -78,5 +61,6 @@ def test_curl_response():
         os.remove(json_path)
         print(f"File {json_path} has been deleted.")
     
-    # Fecha o terminal
+    # Aqui você ainda pode continuar com a automação gráfica, se necessário
+    # Fecha o terminal ou qualquer outra interação que precise ser feita
     pyautogui.hotkey("alt", "f4")  # Envia Alt+F4 para fechar a janela
