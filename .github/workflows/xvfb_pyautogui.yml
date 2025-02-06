@@ -19,17 +19,17 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt-get install -y xclip xterm  # Install xterm (lightweight terminal)
-          sudo apt install -y xvfb x11-utils xdotool xauth ffmpeg imagemagick xfce4-terminal python3-tk  # Install tkinter
+          sudo apt install -y xclip  # xclip é útil para manipulação de clipboard, removendo o xterm
+          sudo apt install -y xvfb x11-utils xdotool xauth ffmpeg imagemagick python3-tk  # Instalar tkinter
           python3 -m pip install --upgrade pip
-          python3 -m pip install pytest pyautogui pyperclip Faker pytest-html  # Install all dependencies at once
+          python3 -m pip install pytest pyautogui pyperclip Faker pytest-html  # Instalar dependências
 
       - name: Set up graphical environment
         run: |
           export DISPLAY=:99
-          Xvfb :99 -screen 0 1920x1080x24 &  # Start Xvfb in the background
-          sleep 2  # Wait for Xvfb to stabilize
-          # Create and configure Xauthority manually
+          Xvfb :99 -screen 0 1920x1080x24 &  # Inicia Xvfb em segundo plano
+          sleep 2  # Aguarda Xvfb estabilizar
+          # Cria e configura Xauthority manualmente
           touch ~/.Xauthority
           xauth generate :99 . trusted
           export XAUTHORITY=$HOME/.Xauthority
@@ -40,8 +40,8 @@ jobs:
       - name: Start screen recording
         run: |
           export DISPLAY=:99
-          ffmpeg -y -f x11grab -video_size 1920x1080 -i :99 -r 25 -probesize 50M -analyzeduration 100M -pix_fmt yuv420p reports/test_recording.mp4 &  # Start screen capture
-          echo $! > ffmpeg_pid.txt  # Save PID for later termination
+          ffmpeg -y -f x11grab -video_size 1920x1080 -i :99 -r 25 -probesize 50M -analyzeduration 100M -pix_fmt yuv420p reports/test_recording.mp4 &  # Inicia captura de tela
+          echo $! > ffmpeg_pid.txt  # Salva PID para posterior terminação
         shell: /usr/bin/bash -e {0}
 
       - name: Capture initial screen
@@ -53,13 +53,13 @@ jobs:
       - name: Run tests with PyAutoGUI
         run: |
           export DISPLAY=:99
-          pytest ./tests -v --html=./reports/report.html --self-contained-html  # Run tests and generate HTML report
+          pytest ./tests -v --html=./reports/report.html --self-contained-html  # Executa os testes e gera o relatório HTML
         shell: /usr/bin/bash -e {0}
 
       - name: Stop screen recording
         run: |
           if [ -f ffmpeg_pid.txt ]; then
-            kill $(cat ffmpeg_pid.txt) || true  # Terminate ffmpeg process
+            kill $(cat ffmpeg_pid.txt) || true  # Termina o processo ffmpeg
           fi
         shell: /usr/bin/bash -e {0}
 
@@ -67,4 +67,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-report
-          path: reports/  # Upload generated reports (image and HTML)
+          path: reports/  # Envia os relatórios gerados (imagem e HTML)
