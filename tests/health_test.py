@@ -8,42 +8,42 @@ import re
 
 # Test case function for pytest
 def test_curl_response():
-    # Executar o curl diretamente sem abrir um terminal gráfico
+    # Run curl directly without opening a graphical terminal
     command = ["curl", "-X", "GET", "https://practice.expandtesting.com/notes/api/health-check", "-H", "accept: application/json"]
     
-    # Executar o comando curl e obter a resposta
+    # Execute the curl command and get the response
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
 
-    # Se houver erro, imprima a mensagem de erro
+    # If there is an error, print the error message
     if stderr:
-        print("Erro ao executar o comando curl:", stderr.decode())
+        print("Error executing the curl command:", stderr.decode())
     
-    # Decodifique a resposta para texto
+    # Decode the response to text
     response = stdout.decode()
     
-    # Depuração: imprime a resposta do curl
-    print("Resposta do curl:")
+    # Debugging: print the curl response
+    print("Curl response:")
     print(response)
     
-    # Expressão regular para encontrar um JSON válido no texto da resposta
+    # Regular expression to find a valid JSON in the response text
     json_match = re.search(r'({.*})', response, re.DOTALL)
 
     if json_match:
-        json_response = json_match.group(0)  # Extrai o JSON
+        json_response = json_match.group(0)  # Extracts the JSON
     else:
-        json_response = "{}"  # Caso não encontre um JSON, define um JSON vazio
+        json_response = "{}"  # If no JSON is found, set an empty JSON
 
-    # Certifique-se de que o diretório 'resources' existe
+    # Ensure that the 'resources' directory exists
     resources_dir = "resources"
     os.makedirs(resources_dir, exist_ok=True)
 
-    # Salva a resposta JSON no arquivo testdata.json
+    # Save the JSON response to the testdata.json file
     json_path = os.path.join(resources_dir, "testdata.json")
     with open(json_path, "w", encoding="utf-8") as json_file:
         json.dump(json.loads(json_response), json_file, indent=4)
 
-    # Lê o arquivo JSON e extrai variáveis
+    # Read the JSON file and extract variables
     with open(json_path, "r", encoding="utf-8") as json_file:
         data = json.load(json_file)
 
@@ -51,16 +51,16 @@ def test_curl_response():
     status = data.get("status")
     message = data.get("message")
 
-    # Realiza asserções para validar a resposta
+    # Perform assertions to validate the response
     assert success == True, f"Expected success=True but got {success}"
     assert status == 200, f"Expected status=200 but got {status}"
     assert message == "Notes API is Running", f"Expected message='Notes API is Running' but got {message}"
 
-    # Apaga o arquivo testdata.json após o teste
+    # Delete the testdata.json file after the test
     if os.path.exists(json_path):
         os.remove(json_path)
         print(f"File {json_path} has been deleted.")
     
-    # Aqui você ainda pode continuar com a automação gráfica, se necessário
-    # Fecha o terminal ou qualquer outra interação que precise ser feita
-    pyautogui.hotkey("alt", "f4")  # Envia Alt+F4 para fechar a janela
+    # Here you can still continue with the graphical automation if needed
+    # Close the terminal or any other interaction that needs to be done
+    pyautogui.hotkey("alt", "f4")  # Sends Alt+F4 to close the window
