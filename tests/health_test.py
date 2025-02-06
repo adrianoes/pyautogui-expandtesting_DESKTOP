@@ -8,36 +8,35 @@ import re
 
 # Test case function for pytest
 def test_curl_response():
-    # Open Git Bash using subprocess without needing to click
-    # subprocess.Popen("start bash.exe", shell=True)  # Opens Terminal configured as Git Bash 
-    subprocess.Popen(["xterm", "-hold", "-e", "bash"])
+    # Abrir o terminal bash diretamente
+    subprocess.Popen(["bash", "-c", "echo 'Terminal Bash aberto'"])  # Inicia o bash com um comando simples
 
-    time.sleep(5)  # Wait for the Bash window to open
+    time.sleep(5)  # Esperar o terminal abrir
 
     # Maximize the terminal window by sending Alt + Space, then X
-    pyautogui.hotkey("alt", "space")  # Open window control menu
+    pyautogui.hotkey("alt", "space")  # Abre o menu de controle da janela
     time.sleep(0.5)
-    pyautogui.press("x")  # Maximize the window
-    time.sleep(1)  # Allow the window to maximize
+    pyautogui.press("x")  # Maximiza a janela
+    time.sleep(1)  # Aguarda o tempo necessário para maximizar
 
-    # Type the curl command and press Enter
+    # Digitar o comando curl e pressionar Enter
     command = "curl -X 'GET' 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json'"
-    pyperclip.copy(command)  # Copy the command to the clipboard
+    pyperclip.copy(command)  # Copia o comando para a área de transferência
     time.sleep(1)
-    # Use pyautogui to paste and run the command in Git Bash
-    pyautogui.hotkey("ctrl", "v")  # Paste the command
-    pyautogui.press("enter")  # Execute the command
+    # Usar pyautogui para colar e executar o comando no terminal
+    pyautogui.hotkey("ctrl", "v")  # Cola o comando
+    pyautogui.press("enter")  # Executa o comando
 
-    # Wait for the command response
+    # Espera pela resposta do comando
     time.sleep(10)
 
-    # Select and copy the response from Git Bash
-    pyautogui.hotkey("ctrl", "shift", "a")  # Select all text
-    time.sleep(2)  # Ensure the selection is complete
-    pyautogui.hotkey("ctrl", "c")  # Copy the selection
-    time.sleep(2)  # Ensure the copy is complete
+    # Seleciona e copia a resposta do terminal
+    pyautogui.hotkey("ctrl", "shift", "a")  # Seleciona todo o texto
+    time.sleep(2)  # Garantir que a seleção foi feita
+    pyautogui.hotkey("ctrl", "c")  # Copia a seleção
+    time.sleep(2)  # Garantir que a cópia foi concluída
 
-    # Retrieve the copied text
+    # Recupera o texto copiado
     copied_text = pyperclip.paste()
 
     # Depuração: imprime o texto copiado para verificar
@@ -52,16 +51,16 @@ def test_curl_response():
     else:
         json_response = "{}"  # Caso não encontre um JSON, define um JSON vazio
 
-    # Ensure the 'resources' directory exists
+    # Certifique-se de que o diretório 'resources' existe
     resources_dir = "resources"
     os.makedirs(resources_dir, exist_ok=True)
 
-    # Save the JSON response to a file
+    # Salva a resposta JSON no arquivo testdata.json
     json_path = os.path.join(resources_dir, "testdata.json")
     with open(json_path, "w", encoding="utf-8") as json_file:
         json.dump(json.loads(json_response), json_file, indent=4)
 
-    # Read the JSON file and extract variables
+    # Lê o arquivo JSON e extrai variáveis
     with open(json_path, "r", encoding="utf-8") as json_file:
         data = json.load(json_file)
 
@@ -69,15 +68,15 @@ def test_curl_response():
     status = data.get("status")
     message = data.get("message")
 
-    # Perform assertions to validate the response
+    # Realiza asserções para validar a resposta
     assert success == True, f"Expected success=True but got {success}"
     assert status == 200, f"Expected status=200 but got {status}"
     assert message == "Notes API is Running", f"Expected message='Notes API is Running' but got {message}"
 
-    # Delete the testdata.json file after the test
+    # Apaga o arquivo testdata.json após o teste
     if os.path.exists(json_path):
         os.remove(json_path)
         print(f"File {json_path} has been deleted.")
     
-    # Close the terminal (Git Bash)
-    pyautogui.hotkey("alt", "f4")  # Sends Alt+F4 to close the window
+    # Fecha o terminal
+    pyautogui.hotkey("alt", "f4")  # Envia Alt+F4 para fechar a janela
