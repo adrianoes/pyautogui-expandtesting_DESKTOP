@@ -23,7 +23,7 @@ def test_curl_response():
     response = stdout.decode()
     
     # Debugging: print the curl response
-    print("Curl response:")
+    print("Curl response is:")
     print(response)
     
     # Regular expression to find a valid JSON in the response text
