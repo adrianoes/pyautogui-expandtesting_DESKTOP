@@ -21,28 +21,31 @@ jobs:
 
       - name: Start Xvfb and Openbox
         run: |
-          Xvfb :99 -screen 0 1920x1080x24 &
+          Xvfb :99 -screen 0 1920x1080x24 -ac &
           export DISPLAY=:99
           echo "DISPLAY=:99" >> $GITHUB_ENV
-          openbox-session &  # Inicia um ambiente gráfico para interagir
+          echo "XAUTHORITY=" >> $GITHUB_ENV  # Evita erro de ~/.Xauthority
+          sleep 2  # Tempo para Xvfb iniciar
+          openbox-session &  # Inicia ambiente gráfico
 
       - name: Create reports directory
         run: mkdir -p reports
 
       - name: Start screen recording
         run: |
-          ffmpeg -y -f x11grab -video_size 1920x1080 -i :99 -r 25 -pix_fmt yuv420p reports/test_recording.mp4 &
-          echo $! > ffmpeg_pid.txt  # Save the PID to stop later
+          sleep 2  # Esperar Openbox e Xvfb estabilizarem
+          ffmpeg -y -f x11grab -video_size 1920x1080 -i :99 -r 25 -probesize 50M -analyzeduration 100M -pix_fmt yuv420p reports/test_recording.mp4 &
+          echo $! > ffmpeg_pid.txt  # Salvar PID para encerrar depois
 
       - name: Capture screenshot before test
         run: import -window root reports/before_test.png
 
       - name: Open Terminal and Simulate Click
         run: |
-          sleep 3  # Esperar Openbox iniciar
+          sleep 5  # Tempo extra para evitar problemas
           xfce4-terminal &  # Abre o terminal
-          sleep 3  # Tempo para o terminal abrir
-          xdotool mousemove 50 50 click 1  # Simula clique na posição do ícone do terminal
+          sleep 5  # Esperar terminal abrir completamente
+          xdotool mousemove 50 50 click 1  # Simula clique na posição do terminal
 
       - name: Run PyAutoGUI tests
         run: pytest ./tests -v --html=./reports/report.html --self-contained-html
@@ -54,7 +57,7 @@ jobs:
         run: |
           kill $(cat ffmpeg_pid.txt)
 
-      - name: Upload test artifacts
+      - name: Upload test artifacts (Screenshots & Video)
         uses: actions/upload-artifact@v4
         with:
           name: test-results
