@@ -8,7 +8,7 @@ import re
 def test_curl_response():
     # Abre o terminal no Ubuntu
     pyautogui.hotkey("ctrl", "alt", "t")
-    time.sleep(2)  # Espera o terminal abrir
+    time.sleep(10)  # Espera o terminal abrir
 
     # Digita o comando no terminal e executa
     command = "curl -X GET 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json'"
@@ -16,11 +16,11 @@ def test_curl_response():
     pyautogui.press("enter")
 
     # Aguarda tempo suficiente para resposta aparecer
-    time.sleep(5)    
+    time.sleep(10)    
 
     # Copia a resposta do terminal
     pyautogui.hotkey("ctrl", "shift", "c")
-    time.sleep(2)
+    time.sleep(10)
 
     # Obtém a resposta copiada
     response = pyperclip.paste()
