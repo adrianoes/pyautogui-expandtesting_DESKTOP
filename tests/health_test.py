@@ -29,7 +29,7 @@ def test_curl_response():
     pyautogui.press("enter")  # Execute the command
 
     # Wait for the command response
-    time.sleep(5)
+    time.sleep(10)
 
     # Select and copy the response from Git Bash
     pyautogui.hotkey("ctrl", "shift", "a")  # Select all text
