@@ -20,6 +20,8 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y xvfb x11-utils xdotool xauth ffmpeg imagemagick xfce4-terminal
+          python3 -m pip install --upgrade pip
+          python3 -m pip install pytest  # Instalar pytest
 
       - name: Configurar ambiente gráfico
         run: |
