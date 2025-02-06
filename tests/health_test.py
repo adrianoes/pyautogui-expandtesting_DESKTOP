@@ -1,19 +1,16 @@
 import time
-import pyautogui
 import os
 
 def test_open_xterm():
-    # Usar o xdotool para abrir o terminal
-    os.system("xdotool key 'ctrl+alt+t'")  # Simula o atalho para abrir o terminal
-    time.sleep(3)  # Espera o terminal abrir
+    # Configura a variável DISPLAY para usar o ambiente virtual do Xvfb
+    os.environ["DISPLAY"] = ":99"  # Isso garante que o xterm será exibido no display virtual do Xvfb
 
-    # Maximiza a janela do terminal
-    pyautogui.hotkey("ctrl", "alt", "shift", "f")  # Maximiza a janela no xterm (comando para maximizar no X11)
-    time.sleep(2)  # Aguarda a maximização
+    # Tenta abrir o terminal diretamente com o comando "xterm"
+    os.system("xterm &")  # Abre o terminal xterm diretamente
+    time.sleep(5)  # Espera o terminal abrir
 
-    # Aguarda alguns segundos para que possamos ver a janela maximizada
-    print("Terminal aberto e maximizado.")
-    time.sleep(5)
+    # Exibe uma mensagem de sucesso
+    print("Terminal xterm foi aberto.")
 
-    # Fecha o terminal
-    pyautogui.hotkey("alt", "f4")  # Fecha a janela do terminal
+# Execute a função para testar
+test_open_xterm()
