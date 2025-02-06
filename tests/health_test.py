@@ -4,6 +4,7 @@ import pyautogui
 import pyperclip
 import json
 import os
+import re
 
 # Test case function for pytest
 def test_curl_response():
@@ -39,13 +40,17 @@ def test_curl_response():
     # Retrieve the copied text
     copied_text = pyperclip.paste()
 
-    # Extract the JSON response from the copied text
-    start = copied_text.find("{")  # Find the start of the JSON
-    end = copied_text.rfind("}")  # Find the end of the JSON
-    if start != -1 and end != -1:
-        json_response = copied_text[start : end + 1]  # Extract JSON
+    # Depuração: imprime o texto copiado para verificar
+    print("Texto copiado do terminal:")
+    print(copied_text)
+
+    # Expressão regular para encontrar um JSON válido no texto copiado
+    json_match = re.search(r'({.*})', copied_text, re.DOTALL)
+
+    if json_match:
+        json_response = json_match.group(0)  # Extrai o JSON
     else:
-        json_response = "{}"  # Empty JSON as fallback if not found
+        json_response = "{}"  # Caso não encontre um JSON, define um JSON vazio
 
     # Ensure the 'resources' directory exists
     resources_dir = "resources"
