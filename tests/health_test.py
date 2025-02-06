@@ -8,8 +8,11 @@ def test_curl_response():
     pyautogui.hotkey("ctrl", "alt", "t")
     time.sleep(2)  # Espera o terminal abrir
 
-    # Define caminho para salvar a resposta
-    json_path = os.path.expanduser("~/curl_response.json")
+    # Define o diretório "resources" e o caminho para o arquivo JSON
+    resources_dir = os.path.join(os.getcwd(), "resources")
+    os.makedirs(resources_dir, exist_ok=True)  # Garante que o diretório "resources" exista
+
+    json_path = os.path.join(resources_dir, "curl_response.json")  # Caminho para salvar o JSON
 
     # Digita o comando no terminal e redireciona para um arquivo
     command = f"curl -X GET 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json' > {json_path}"
@@ -20,8 +23,12 @@ def test_curl_response():
     time.sleep(5)    
 
     # Lê o JSON salvo no arquivo
-    with open(json_path, "r", encoding="utf-8") as json_file:
-        response = json_file.read()
+    try:
+        with open(json_path, "r", encoding="utf-8") as json_file:
+            response = json_file.read()
+    except FileNotFoundError:
+        print(f"Arquivo não encontrado: {json_path}")
+        raise  # Reraise the exception to stop the test
 
     print("Curl response from file:")
     print(response)
