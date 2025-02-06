@@ -1,49 +1,35 @@
 import time
 import pyautogui
-import pyperclip
 import json
 import os
-import re
 
 def test_curl_response():
     # Abre o terminal no Ubuntu
     pyautogui.hotkey("ctrl", "alt", "t")
-    time.sleep(10)  # Espera o terminal abrir
+    time.sleep(2)  # Espera o terminal abrir
 
-    # Digita o comando no terminal e executa
-    command = "curl -X GET 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json'"
+    # Define caminho para salvar a resposta
+    json_path = os.path.expanduser("~/curl_response.json")
+
+    # Digita o comando no terminal e redireciona para um arquivo
+    command = f"curl -X GET 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json' > {json_path}"
     pyautogui.write(command)
     pyautogui.press("enter")
 
-    # Aguarda tempo suficiente para resposta aparecer
-    time.sleep(10)    
+    # Aguarda o curl processar e salvar a resposta
+    time.sleep(5)    
 
-    # Copia a resposta do terminal
-    pyautogui.hotkey("ctrl", "shift", "c")
-    time.sleep(10)
+    # Lê o JSON salvo no arquivo
+    with open(json_path, "r", encoding="utf-8") as json_file:
+        response = json_file.read()
 
-    # Obtém a resposta copiada
-    response = pyperclip.paste()
-
-    # Debug: Exibe a resposta copiada
-    print("Curl response copied from terminal:")
+    print("Curl response from file:")
     print(response)
 
-    # Expressão regular para capturar o JSON
-    json_match = re.search(r'({.*})', response, re.DOTALL)
-    json_response = json_match.group(0) if json_match else "{}"
+    # Converte string JSON para dicionário
+    data = json.loads(response)
 
-    # Salva o JSON no arquivo
-    resources_dir = "resources"
-    os.makedirs(resources_dir, exist_ok=True)
-    json_path = os.path.join(resources_dir, "testdata.json")
-    with open(json_path, "w", encoding="utf-8") as json_file:
-        json.dump(json.loads(json_response), json_file, indent=4)
-
-    # Lê o JSON salvo e faz asserções
-    with open(json_path, "r", encoding="utf-8") as json_file:
-        data = json.load(json_file)
-
+    # Faz as asserções
     assert data.get("success") == True
     assert data.get("status") == 200
     assert data.get("message") == "Notes API is Running"
