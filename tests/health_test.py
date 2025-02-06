@@ -6,7 +6,7 @@ import os
 import re
 
 def test_curl_response():
-    # Abre o terminal com atalho
+    # Abre o terminal no Ubuntu
     pyautogui.hotkey("ctrl", "alt", "t")
     time.sleep(2)  # Espera o terminal abrir
 
@@ -15,13 +15,12 @@ def test_curl_response():
     pyautogui.write(command)
     pyautogui.press("enter")
 
-    # Espera o terminal exibir a resposta do curl
-    time.sleep(60)   
+    # Aguarda tempo suficiente para resposta aparecer
+    time.sleep(5)    
 
     # Copia a resposta do terminal
     pyautogui.hotkey("ctrl", "shift", "c")
-    
-    time.sleep(60)
+    time.sleep(2)
 
     # Obtém a resposta copiada
     response = pyperclip.paste()

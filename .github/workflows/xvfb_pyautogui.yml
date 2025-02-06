@@ -51,11 +51,10 @@ jobs:
           ffmpeg -y -f x11grab -video_size 1920x1080 -i :99 -r 25 -pix_fmt yuv420p reports/test_recording.mp4 &
           echo $! > ffmpeg_pid.txt  
 
-      - name: Open terminal and run test
+      - name: Run Pytest (executa o teste que abrirá o terminal)
         run: |
           export DISPLAY=:99
-          xterm -geometry 100x30+100+100 -hold -e "pytest ./tests -v --html=./reports/report.html --self-contained-html" &
-          sleep 10  
+          pytest ./tests -v --html=./reports/report.html --self-contained-html  
         shell: /usr/bin/bash -e {0}
 
       - name: Capture final screen
