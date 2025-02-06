@@ -19,17 +19,21 @@ jobs:
       - name: Instalar dependências
         run: |
           sudo apt update
-          sudo apt install -y xvfb x11-utils xdotool xauth ffmpeg xfce4-terminal
+          sudo apt install -y xvfb x11-utils xdotool xauth ffmpeg imagemagick xfce4-terminal
 
       - name: Configurar ambiente gráfico
         run: |
           export DISPLAY=:99
-          Xvfb :99 -screen 0 1920x1080x24 & 
+          Xvfb :99 -screen 0 1920x1080x24 &
           sleep 2  # Esperar o Xvfb estabilizar
 
+          # Criar e configurar Xauthority manualmente
+          touch ~/.Xauthority
           xauth generate :99 . trusted
           export XAUTHORITY=$HOME/.Xauthority
-          touch $XAUTHORITY
+
+      - name: Criar diretório de relatórios
+        run: mkdir -p reports
 
       - name: Iniciar gravação de tela
         run: |
@@ -61,4 +65,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-report
-          path: reports/report.html
+          path: reports/
