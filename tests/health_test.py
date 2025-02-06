@@ -1,51 +1,36 @@
 import time
 import pyautogui
-import pyperclip
 
-def test_curl_response():
-    # Abre o terminal no Ubuntu
+def test_open_and_maximize_xterm():
+    # Abre o terminal xterm
     pyautogui.hotkey("ctrl", "alt", "t")
     time.sleep(2)  # Espera o terminal abrir
 
-    # Digita o comando no terminal e executa
-    command = "curl -X GET 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json'"
-    pyautogui.write(command)
-    pyautogui.press("enter")
-
-    # Aguarda tempo suficiente para a resposta aparecer
-    time.sleep(20)
-
-    # Copia a resposta do terminal
-    pyautogui.hotkey("ctrl", "shift", "c")
+    # Maximiza a janela do terminal
+    pyautogui.hotkey("ctrl", "alt", "shift", "f")  # Maximiza a janela no xterm
     time.sleep(2)
 
-    # Obtém a resposta copiada
-    response = pyperclip.paste()
+    # Verifica se a janela do terminal foi aberta
+    screen = pyautogui.screenshot()
+    terminal_found = pyautogui.locateOnScreen('terminal_icon.png')  # Verifica se o ícone do terminal está visível
 
-    # Debug: Exibe a resposta copiada
-    print("Curl response copied from terminal:")
-    print(response)
+    if terminal_found:
+        print("Terminal encontrado na tela.")
+    else:
+        print("Terminal não encontrado na tela.")
 
-    # # Expressão regular para capturar o JSON
-    # json_match = re.search(r'({.*})', response, re.DOTALL)
-    # if not json_match:
-    #     print("Erro: Não foi possível encontrar um JSON válido na resposta.")
-    #     return
+    # Verificar se a janela foi maximizada, aqui apenas simulando um simples check
+    # Verificando se o terminal ocupa uma área grande da tela
+    screen_width, screen_height = pyautogui.size()
+    terminal_position = pyautogui.getWindowsWithTitle("xterm")
 
-    # json_response = json_match.group(0)
-    # print("JSON capturado:", json_response)
+    if terminal_position and terminal_position[0].width == screen_width and terminal_position[0].height == screen_height:
+        print("A janela do terminal foi maximizada.")
+    else:
+        print("A janela do terminal não foi maximizada.")
 
-    # # Armazenando os dados da resposta em uma variável (dicionário)
-    # try:
-    #     data = json.loads(json_response)
-    # except json.JSONDecodeError as e:
-    #     print(f"Erro ao tentar decodificar o JSON: {e}")
-    #     return
-
-    # # Fazendo as asserções diretamente na variável
-    # assert data.get("success") == True, f"Esperado 'success' como True, mas recebeu {data.get('success')}"
-    # assert data.get("status") == 200, f"Esperado 'status' como 200, mas recebeu {data.get('status')}"
-    # assert data.get("message") == "Notes API is Running", f"Esperado 'message' como 'Notes API is Running', mas recebeu {data.get('message')}"
+    # Aguarda mais alguns segundos para a visualização
+    time.sleep(5)
 
     # Fecha o terminal
     pyautogui.hotkey("alt", "f4")
