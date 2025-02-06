@@ -46,8 +46,18 @@ and keep all the other preferenced options as they are.
 - [pytest](https://pypi.org/project/pytest/)
 - [Faker](https://pypi.org/project/Faker/)
 - [pytest-html](https://pypi.org/project/pytest-html/)
+- [xclip](https://github.com/astrand/xclip)
+- [he Ultimate Guide to Install XVFB On Ubuntu 20.04](https://www.youtube.com/watch?v=ACYjKAMEvaQ)
+- [How to Install Xvfb on Ubuntu 20.04](https://neuronvm.com/docs/install-xvfb-on-ubuntu-20-04/)
+- [x11-utils](https://www.x.org/wiki/Releases/)
+- [xdotool](https://github.com/jordansissel/xdotool)
+- [xauth](https://linux.die.net/man/1/xauth)
+- [ffmpeg](https://ffmpeg.org/documentation.html)
+- [ImageMagick](https://imagemagick.org/script/index.php)
+- [python3-tk](https://wiki.python.org/moin/TkInter)
 
 # Tips:
 
 - UI and API tests to send password reset link to user's email and API tests to verify a password reset token and reset a user's password must be tested manually as they rely on e-mail verification.
 - Navigate to the get_position.py directory and execute ```python get_position.py``` when theres is the need to find the coordinates of a point.
+- Workflow environment (Ubuntu) is different from local environment (Windows). Documentation will be updated on Ubuntu environmet soon. 
