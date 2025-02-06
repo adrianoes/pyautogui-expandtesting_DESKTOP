@@ -20,7 +20,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y xclip 
-          sudo apt install -y xvfb x11-utils xdotool xauth ffmpeg imagemagick python3-tk openbox 
+          sudo apt install -y xvfb x11-utils xdotool xauth ffmpeg imagemagick python3-tk fluxbox xterm 
           python3 -m pip install --upgrade pip
           python3 -m pip install pytest pyautogui pyperclip Faker pytest-html 
 
@@ -28,30 +28,31 @@ jobs:
         run: |
           export DISPLAY=:99
           Xvfb :99 -screen 0 1920x1080x24 &
-          sleep 5  # Espera o ambiente carregar
-          
+          sleep 3  # Aguarda o Xvfb iniciar
+
           touch ~/.Xauthority
           xauth generate :99 . trusted
           export XAUTHORITY=$HOME/.Xauthority
-          
-          openbox-session &
-          sleep 2  # Espera Openbox carregar
 
-          # Testa se o ambiente gráfico está funcionando
-          xdotool mousemove 960 540 click 1
-          
+          fluxbox > /dev/null 2>&1 &  # Inicia um gerenciador de janelas leve
+          sleep 3  # Aguarda carregar
+
+          xterm -geometry 80x24+0+0 -hold -e "echo 'Testing UI...'" &  # Abre um terminal gráfico visível no Xvfb
+          sleep 3  # Garante que algo seja renderizado na tela
+
       - name: Create reports directory
         run: mkdir -p reports
 
-      - name: Verify DISPLAY environment (Debugging)
-        run: echo "DISPLAY is set to $DISPLAY"
+      - name: Capture initial screen (for debugging)
+        run: |
+          export DISPLAY=:99
+          import -window root reports/before_test.png
+        shell: /usr/bin/bash -e {0}
 
       - name: Run tests with PyAutoGUI
         run: |
           export DISPLAY=:99
-
-          # Inicia a gravação de vídeo aqui, dentro do teste
-          ffmpeg -y -f x11grab -video_size 1920x1080 -i :99 -r 25 -probesize 50M -analyzeduration 100M -pix_fmt yuv420p reports/test_recording.mp4 &
+          ffmpeg -y -f x11grab -video_size 1920x1080 -i :99 -r 25 -pix_fmt yuv420p reports/test_recording.mp4 &
           echo $! > ffmpeg_pid.txt  
 
           pytest ./tests -v --html=./reports/report.html --self-contained-html  
