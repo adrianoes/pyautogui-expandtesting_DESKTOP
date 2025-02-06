@@ -1,18 +1,20 @@
 import time
+from faker import Faker
 import pyautogui
 import json
 import os
 
 def test_curl_response():
+    randomData = Faker().hexify(text='^^^^^^^^^^^^')
     # Abre o terminal no Ubuntu
     pyautogui.hotkey("ctrl", "alt", "t")
     time.sleep(2)  # Espera o terminal abrir
 
     # Define o diretório "resources" e o caminho para o arquivo JSON
-    resources_dir = os.path.join(os.getcwd(), "resources")  # Diretório './resources' (um nível acima)
+    resources_dir = "./resources"  # Diretório './resources' (um nível acima)
     os.makedirs(resources_dir, exist_ok=True)  # Garante que o diretório "resources" exista
 
-    json_path = os.path.join(resources_dir, "curl_response.json")  # Caminho para salvar o JSON
+    json_path = os.path.join(resources_dir, f"file-{randomData}.json")  # Caminho para salvar o JSON
 
     # Digita o comando no terminal e redireciona para um arquivo
     command = f"curl -X GET 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json' > {json_path}"
