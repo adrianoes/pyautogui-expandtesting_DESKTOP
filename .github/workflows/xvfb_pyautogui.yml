@@ -1,0 +1,61 @@
+name: Run PyAutoGUI Tests with Xvfb (With Video & Screenshots)
+
+on:
+    push:
+      branches: [ "main" ]
+    pull_request:
+      branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y xvfb x11-apps xdotool x11-utils xterm ffmpeg
+          python -m pip install --upgrade pip
+          pip install pyautogui pyperclip pytest Faker pytest-html
+          pip install pyvirtualdisplay
+
+      - name: Start Xvfb
+        run: |
+          Xvfb :99 -screen 0 1920x1080x24 &  # Create a 1920x1080 display
+          export DISPLAY=:99
+          echo "DISPLAY=:99" >> $GITHUB_ENV
+
+      - name: Start Display Recording
+        run: |
+          ffmpeg -y -f x11grab -video_size 1920x1080 -i :99 -r 25 -pix_fmt yuv420p reports/test_recording.mp4 &
+          echo $! > ffmpeg_pid.txt  # Save the PID to stop later
+
+      - name: Capture Screenshot Before Test
+        run: import -window root reports/before_test.png
+
+      - name: Install and Launch Git Bash
+        run: |
+          sudo apt install -y git
+          bash --version
+          xterm &  # Open a graphical terminal (replace if needed)
+
+      - name: Run Tests with pytest
+        run: |
+          pytest ./tests -v --html=./reports/report.html --self-contained-html
+
+      - name: Capture Screenshot After Test
+        run: import -window root reports/after_test.png
+
+      - name: Stop Display Recording
+        run: |
+          kill $(cat ffmpeg_pid.txt) || true  # Stop ffmpeg process
+
+      - name: Upload Artifacts (Screenshots, Video, and Report)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-artifacts
+          path: reports/
