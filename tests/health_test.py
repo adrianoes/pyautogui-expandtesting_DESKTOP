@@ -9,7 +9,7 @@ def test_curl_response():
     time.sleep(2)  # Espera o terminal abrir
 
     # Define o diretório "resources" e o caminho para o arquivo JSON
-    resources_dir = os.path.join(os.getcwd(), "resources")
+    resources_dir = os.path.join(os.getcwd(), "resources")  # Diretório './resources' (um nível acima)
     os.makedirs(resources_dir, exist_ok=True)  # Garante que o diretório "resources" exista
 
     json_path = os.path.join(resources_dir, "curl_response.json")  # Caminho para salvar o JSON
