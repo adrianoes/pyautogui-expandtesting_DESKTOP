@@ -16,7 +16,7 @@ def test_curl_response():
     pyautogui.press("enter")
 
     # Espera o terminal exibir a resposta do curl
-    time.sleep(5)  
+    time.sleep(20)  
 
     # Copia a resposta do terminal
     pyautogui.hotkey("ctrl", "shift", "c")
