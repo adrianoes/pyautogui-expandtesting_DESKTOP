@@ -4,6 +4,10 @@ import os
 import json
 
 def test_xterm_curl():
+    xterm_curl()
+
+
+def xterm_curl():
     os.environ["DISPLAY"] = ":99"
 
     # Verifica se o terminal já está aberto
