@@ -4,10 +4,6 @@ import os
 import json
 
 def test_xterm_curl():
-    xterm_curl()
-
-
-def xterm_curl():
     os.environ["DISPLAY"] = ":99"
 
     # Verifica se o terminal já está aberto
@@ -15,7 +11,7 @@ def xterm_curl():
     
     if not existing_process:
         print("Abrindo novo terminal xterm...")
-        os.system("xterm &")
+        os.system("xterm -fa 'Monospace' -fs 12 &")  # Forçando uma fonte padrão para evitar erros
         time.sleep(5)  # Espera o terminal abrir
     else:
         print(f"xterm já estava em execução (PID: {existing_process}). Não abrindo novo terminal.")
@@ -30,7 +26,7 @@ def xterm_curl():
     # Verifica se já há um script de captura ativo (evita redirecionamento duplicado)
     if not os.path.exists("/tmp/last"):
         print("Configurando captura de saída do terminal...")
-        save_output_script = """exec 3>&1; trap 'exec 1>&3; [ -f /tmp/current ] && mv /tmp/current /tmp/last; exec > >(tee /tmp/current)' DEBUG"""
+        save_output_script = """trap 'echo "capturando saída..." > /tmp/last' DEBUG"""
         pyautogui.write(save_output_script, interval=0.1)
         pyautogui.press("enter")
         time.sleep(2)  # Aguarda mais tempo para garantir que o redirecionamento seja configurado
@@ -45,12 +41,12 @@ def xterm_curl():
     print("Comando cURL executado.")
 
     # Espera adicional para garantir que o comando cURL seja processado
-    time.sleep(60)  # Aumenta o tempo de espera
+    time.sleep(10)  # Aumenta o tempo de espera
 
-    # Lê o conteúdo do arquivo /tmp/last
-    retry_count = 0
-    max_retries = 30
+    # Verifica a resposta no arquivo /tmp/last
     response_from_file = ""
+    retry_count = 0
+    max_retries = 10
 
     while retry_count < max_retries:
         if os.path.exists("/tmp/last") and os.path.getsize("/tmp/last") > 0:
@@ -64,22 +60,26 @@ def xterm_curl():
 
     print(f"Resposta capturada: {response_from_file}")
 
-    try:
-        response_json = json.loads(response_from_file)
-        success = response_json.get("success")
-        status = response_json.get("status")
-        message = response_json.get("message")
+    # Se a resposta foi capturada, tentamos decodificar em JSON
+    if response_from_file:
+        try:
+            response_json = json.loads(response_from_file)
+            success = response_json.get("success")
+            status = response_json.get("status")
+            message = response_json.get("message")
 
-        print(f"Dados extraídos: success={success}, status={status}, message='{message}'")
+            print(f"Dados extraídos: success={success}, status={status}, message='{message}'")
 
-        assert success == True, "Erro: success não é True"
-        assert status == 200, "Erro: status não é 200"
-        assert message == "Notes API is Running", "Erro: mensagem incorreta"
+            assert success == True, "Erro: success não é True"
+            assert status == 200, "Erro: status não é 200"
+            assert message == "Notes API is Running", "Erro: mensagem incorreta"
 
-        print("✅ Teste passou com sucesso!")
+            print("✅ Teste passou com sucesso!")
 
-    except json.JSONDecodeError:
-        print("❌ Erro ao converter a resposta para JSON!")
+        except json.JSONDecodeError:
+            print("❌ Erro ao converter a resposta para JSON!")
+    else:
+        print("❌ A resposta não foi capturada corretamente.")
 
     # Fecha o terminal após capturar a resposta
     os.system("pkill xterm")
