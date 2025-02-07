@@ -1,8 +1,8 @@
 import time
 import os
 import pyautogui
-import pyperclip  # Para copiar e colar a resposta do terminal
 import json
+from faker import Faker
 
 def test_xterm_curl():
     os.environ["DISPLAY"] = ":99"  # Usa o display virtual do Xvfb
@@ -18,8 +18,15 @@ def test_xterm_curl():
 
     time.sleep(2)
 
-    # Comando cURL que será digitado no terminal
-    curl_command = "curl -X 'GET' 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json'"
+    # Gera um nome aleatório para o arquivo JSON
+    randomData = Faker().hexify(text='^^^^^^^^^^^^')  # Ex: "a1b2c3d4e5f6"
+    json_filename = f"./resources/test_data_{randomData}.json"
+
+    # Garante que o diretório resources existe
+    os.makedirs("./resources", exist_ok=True)
+
+    # Comando cURL que será digitado no terminal, redirecionando a saída para um arquivo
+    curl_command = f"curl -X 'GET' 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json' > {json_filename}"
 
     # Digita o comando
     pyautogui.write(curl_command, interval=0.05)
@@ -31,26 +38,16 @@ def test_xterm_curl():
     pyautogui.press("enter")
     print("Comando cURL executado.")
 
-    time.sleep(10)  # Espera a resposta aparecer no terminal
+    time.sleep(10)  # Espera a resposta ser gravada no arquivo
 
-    # Copia a saída do terminal (Seleciona tudo e copia)
-    pyautogui.hotkey("ctrl", "a")  # Seleciona tudo no terminal
-    time.sleep(1)
-    pyautogui.hotkey("ctrl", "c")  # Copia o conteúdo
-    time.sleep(1)
-
-    # Obtém a resposta copiada
-    response_text = pyperclip.paste()
-    print("Resposta copiada do terminal:", response_text)
-
-    # Filtra o JSON dentro das chaves {}
-    json_start = response_text.find("{")
-    json_end = response_text.rfind("}") + 1
-    json_string = response_text[json_start:json_end]
-
-    # Converte para dicionário
+    # Lê o conteúdo do arquivo
     try:
-        response_json = json.loads(json_string)
+        with open(json_filename, "r") as file:
+            response_text = file.read().strip()
+            print("Resposta capturada do terminal:", response_text)
+
+        # Converte para dicionário
+        response_json = json.loads(response_text)
         success = response_json.get("success")
         status = response_json.get("status")
         message = response_json.get("message")
@@ -64,8 +61,8 @@ def test_xterm_curl():
 
         print("✅ Teste passou com sucesso!")
 
-    except json.JSONDecodeError:
-        print("❌ Erro ao converter a resposta para JSON!")
+    except (json.JSONDecodeError, FileNotFoundError):
+        print("❌ Erro ao converter a resposta para JSON ou arquivo não encontrado!")
 
 # Executa o teste
 test_xterm_curl()
