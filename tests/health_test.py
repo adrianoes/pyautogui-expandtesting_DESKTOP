@@ -19,26 +19,32 @@ def test_xterm_curl():
     time.sleep(2)
 
     # Gera um nome aleatório para o arquivo JSON
-    randomData = Faker().hexify(text='^^^^^^^^^^^^')  # Ex: "a1b2c3d4e5f6"
+    faker = Faker()
+    randomData = faker.hexify(text='^^^^^^^^^^^^')  # Exemplo: "a1b2c3d4e5f6"
     json_filename = f"./resources/test_data_{randomData}.json"
 
     # Garante que o diretório resources existe
     os.makedirs("./resources", exist_ok=True)
 
-    # Comando cURL que será digitado no terminal, redirecionando a saída para um arquivo
-    curl_command = f"curl -X 'GET' 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json' > {json_filename}"
+    # Comando cURL (sem redirecionamento para arquivo)
+    curl_command = "curl -X 'GET' 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json'"
 
-    # Digita o comando
+    # Digita e executa o comando cURL
     pyautogui.write(curl_command, interval=0.05)
     print("Comando cURL digitado.")
-
-    time.sleep(5)  # Aguarda antes de pressionar Enter
-
-    # Pressiona Enter para executar
+    time.sleep(5)
     pyautogui.press("enter")
     print("Comando cURL executado.")
 
-    time.sleep(10)  # Espera a resposta ser gravada no arquivo
+    time.sleep(5)  # Aguarda a resposta aparecer no terminal
+
+    # Digita o comando para salvar a saída em um arquivo
+    save_command = f" > {json_filename}"
+    pyautogui.write(save_command, interval=0.05)
+    pyautogui.press("enter")
+    print(f"Saída do cURL redirecionada para {json_filename}")
+
+    time.sleep(10)  # Espera o arquivo ser salvo
 
     # Lê o conteúdo do arquivo
     try:
@@ -46,7 +52,7 @@ def test_xterm_curl():
             response_text = file.read().strip()
             print("Resposta capturada do terminal:", response_text)
 
-        # Converte para dicionário
+        # Converte para dicionário JSON
         response_json = json.loads(response_text)
         success = response_json.get("success")
         status = response_json.get("status")
