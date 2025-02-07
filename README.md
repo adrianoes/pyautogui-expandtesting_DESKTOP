@@ -55,6 +55,7 @@ and keep all the other preferenced options as they are.
 - [ffmpeg](https://ffmpeg.org/documentation.html)
 - [ImageMagick](https://imagemagick.org/script/index.php)
 - [python3-tk](https://wiki.python.org/moin/TkInter)
+- [Linux Commands Cheat Sheet](https://www.geeksforgeeks.org/linux-commands-cheat-sheet/)
 
 # Tips:
 
