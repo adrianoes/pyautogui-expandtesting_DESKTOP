@@ -9,7 +9,7 @@ def test_xterm_curl():
     existing_process = os.popen("pgrep xterm").read()
     if not existing_process:
         os.system("xterm &")  
-        time.sleep(5)  
+        time.sleep(5)  # Espera o terminal abrir
         print("Terminal xterm foi aberto.")
     else:
         print("xterm já estava em execução.")
@@ -19,10 +19,13 @@ def test_xterm_curl():
     # Comando cURL
     curl_command = "curl -X 'GET' 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json'"
 
-    # Exibe a saída do comando curl no terminal e ao mesmo tempo copia para o clipboard
-    os.system(f"{curl_command} | tee /dev/tty | xclip -selection clipboard")
+    # Executa o comando curl normalmente, e exibe a resposta no terminal
+    os.system(curl_command)  # O comando curl será executado normalmente no terminal
 
-    # Agora, vamos pegar o conteúdo do clipboard
+    # Aguarda um pouco para garantir que a resposta foi gerada no terminal
+    time.sleep(3)
+
+    # Pega a resposta do terminal com o xclip
     response_from_clipboard = os.popen("xclip -selection clipboard -o").read().strip()  # Captura o conteúdo do clipboard
 
     # Exibe a resposta copiada
