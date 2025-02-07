@@ -18,10 +18,6 @@ def test_xterm_curl():
     # Aguarda o terminal abrir completamente
     time.sleep(2)
 
-    # Maximiza a janela do terminal com o atalho Fn + Alt + F10
-    pyautogui.hotkey("fn", "alt", "f10")  
-    time.sleep(2)  # Espera um pouco para garantir que a janela foi maximizada
-
     # Dá o foco ao terminal
     pyautogui.hotkey("alt", "tab")  
     time.sleep(1)  

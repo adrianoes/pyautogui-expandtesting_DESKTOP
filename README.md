@@ -56,6 +56,7 @@ and keep all the other preferenced options as they are.
 - [ImageMagick](https://imagemagick.org/script/index.php)
 - [python3-tk](https://wiki.python.org/moin/TkInter)
 - [Linux Commands Cheat Sheet](https://www.geeksforgeeks.org/linux-commands-cheat-sheet/)
+- [Reusing output from last command in Bash [duplicate]](https://stackoverflow.com/a/48398357)
 
 # Tips:
 
