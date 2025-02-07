@@ -19,52 +19,42 @@ def test_xterm_curl():
     time.sleep(2)
 
     # Maximiza a janela do terminal com o atalho Fn + Alt + F10
-    pyautogui.hotkey("fn", "alt", "f10")  # Maximiza a janela
+    pyautogui.hotkey("fn", "alt", "f10")  
     time.sleep(2)  # Espera um pouco para garantir que a janela foi maximizada
 
-    # Dá o foco ao terminal (usando Alt+Tab ou qualquer outra abordagem, dependendo do sistema)
-    pyautogui.hotkey("alt", "tab")  # Foca no terminal
-    time.sleep(1)  # Aguarda um pouco para garantir o foco no terminal
+    # Dá o foco ao terminal
+    pyautogui.hotkey("alt", "tab")  
+    time.sleep(1)  
 
-    # Espera mais um pouco para garantir que o terminal esteja pronto para receber o comando
-    time.sleep(2)
+    # Adiciona o script de redirecionamento de saída no terminal
+    save_output_script = """exec 3>&1; trap 'exec 1>&3; [ -f /tmp/current ] && mv /tmp/current /tmp/last; exec > >(tee /tmp/current)' DEBUG"""
+    pyautogui.write(save_output_script, interval=0.1)
+    pyautogui.press("enter")
+    time.sleep(1)  
 
     # Comando cURL
     curl_command = "curl -X 'GET' 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json'"
-
-    # Escreve o comando cURL no terminal com mais intervalo para evitar erros de digitação
-    pyautogui.write(curl_command, interval=0.2)  # Aumentamos o intervalo para 0.2s
-    pyautogui.press("enter")  # Executa o comando no terminal
+    
+    # Escreve e executa o comando
+    pyautogui.write(curl_command, interval=0.15)  
+    pyautogui.press("enter")  
     print("Comando cURL executado.")
 
-    # Espera mais tempo para garantir que a resposta apareça corretamente no terminal
-    time.sleep(6)  # Ajuste o tempo se necessário, dependendo da resposta da API
+    # Espera a resposta ser salva no arquivo
+    time.sleep(6)  
 
-    # Seleção do conteúdo no terminal: clicando 3 vezes na posição x=703, y=40
-    pyautogui.click(703, 40)  # Clica na posição inicial
-    time.sleep(0.5)  # Aguarda um pouco
-    pyautogui.click(703, 40)  # Clica novamente
-    time.sleep(0.5)  # Aguarda um pouco
-    pyautogui.click(703, 40)  # Clica pela terceira vez
-    time.sleep(0.5)  # Aguarda para garantir que o texto está selecionado
+    # Lê o conteúdo do arquivo /tmp/last onde o output do último comando foi salvo
+    response_from_file = ""
+    if os.path.exists("/tmp/last"):
+        with open("/tmp/last", "r") as file:
+            response_from_file = file.read().strip()
 
-    # Copia a seleção usando o atalho Ctrl + Shift + C
-    pyautogui.hotkey("ctrl", "shift", "c")  # Copia a seleção
-    time.sleep(1)  # Aguarda um pouco para garantir que a cópia foi feita
-
-    # Agora, o conteúdo está no clipboard, vamos capturá-lo
-    os.system("xclip -selection clipboard -o > clipboard_output.txt")  # Usa xclip para salvar a resposta em um arquivo temporário
-
-    # Lê o conteúdo do arquivo temporário
-    with open('clipboard_output.txt', 'r') as file:
-        response_from_clipboard = file.read().strip()
-
-    # Exibe a resposta copiada
-    print(f"Resposta copiada do clipboard: {response_from_clipboard}")
+    # Exibe a resposta capturada
+    print(f"Resposta capturada: {response_from_file}")
 
     # Converte a resposta para JSON
     try:
-        response_json = json.loads(response_from_clipboard)
+        response_json = json.loads(response_from_file)
         success = response_json.get("success")
         status = response_json.get("status")
         message = response_json.get("message")
