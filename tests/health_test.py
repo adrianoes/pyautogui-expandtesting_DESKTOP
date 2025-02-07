@@ -7,26 +7,31 @@ def test_xterm_curl():
     os.environ["DISPLAY"] = ":99"  # Usa o display virtual do Xvfb
 
     # Verifica se o terminal já está aberto
-    existing_process = os.popen("pgrep xterm").read()
+    existing_process = os.popen("pgrep xterm").read().strip()
+    
     if not existing_process:
+        print("Abrindo novo terminal xterm...")
         os.system("xterm &")  
         time.sleep(5)  # Espera o terminal abrir
-        print("Terminal xterm foi aberto.")
     else:
-        print("xterm já estava em execução.")
+        print(f"xterm já estava em execução (PID: {existing_process}). Não abrindo novo terminal.")
 
     # Aguarda o terminal abrir completamente
     time.sleep(2)
 
-    # Dá o foco ao terminal
+    # Garante que o terminal tenha foco
     pyautogui.hotkey("alt", "tab")  
-    time.sleep(1)  
+    time.sleep(1)
 
-    # Adiciona o script de redirecionamento de saída no terminal
-    save_output_script = """exec 3>&1; trap 'exec 1>&3; [ -f /tmp/current ] && mv /tmp/current /tmp/last; exec > >(tee /tmp/current)' DEBUG"""
-    pyautogui.write(save_output_script, interval=0.1)
-    pyautogui.press("enter")
-    time.sleep(1)  
+    # Verifica se já há um script de captura ativo (evita redirecionamento duplicado)
+    if not os.path.exists("/tmp/last"):
+        print("Configurando captura de saída do terminal...")
+        save_output_script = """exec 3>&1; trap 'exec 1>&3; [ -f /tmp/current ] && mv /tmp/current /tmp/last; exec > >(tee /tmp/current)' DEBUG"""
+        pyautogui.write(save_output_script, interval=0.1)
+        pyautogui.press("enter")
+        time.sleep(1)
+    else:
+        print("Captura de saída já configurada. Pulando essa etapa.")
 
     # Comando cURL
     curl_command = "curl -X 'GET' 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json'"
