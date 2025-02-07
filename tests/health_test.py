@@ -40,26 +40,16 @@ def test_xterm_curl():
     # Espera mais tempo para garantir que a resposta apareça corretamente no terminal
     time.sleep(6)  # Ajuste o tempo se necessário, dependendo da resposta da API
 
-    # Seleção do conteúdo do terminal usando o mouse:
-    # Vamos começar no canto inferior da tela e arrastar até o topo
-    screen_width, screen_height = pyautogui.size()
+    # Seleção do conteúdo no terminal: clicando 3 vezes na posição x=703, y=40
+    pyautogui.click(703, 40)  # Clica na posição inicial
+    time.sleep(0.5)  # Aguarda um pouco
+    pyautogui.click(703, 40)  # Clica novamente
+    time.sleep(0.5)  # Aguarda um pouco
+    pyautogui.click(703, 40)  # Clica pela terceira vez
+    time.sleep(0.5)  # Aguarda para garantir que o texto está selecionado
 
-    # Coordenadas para clicar no canto inferior e arrastar até o topo
-    start_x = screen_width // 2
-    start_y = screen_height - 10  # Canto inferior
-    end_y = 10  # Canto superior
-
-    # Clica no canto inferior e arrasta até o topo
-    pyautogui.moveTo(start_x, start_y)
-    pyautogui.mouseDown()
-    pyautogui.moveTo(start_x, end_y, duration=2)  # Arrasta para o topo
-    pyautogui.mouseUp()
-
-    # Aguarda a seleção ser feita
-    time.sleep(1)
-
-    # Copia o conteúdo selecionado
-    pyautogui.hotkey("ctrl", "c")  # Copia a seleção
+    # Copia a seleção usando o atalho Ctrl + Shift + C
+    pyautogui.hotkey("ctrl", "shift", "c")  # Copia a seleção
     time.sleep(1)  # Aguarda um pouco para garantir que a cópia foi feita
 
     # Agora, o conteúdo está no clipboard, vamos capturá-lo
