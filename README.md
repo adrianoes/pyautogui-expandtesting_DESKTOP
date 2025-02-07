@@ -10,7 +10,7 @@ Desktop testing in [expandtesting](https://practice.expandtesting.com/notes/api/
 | Python                          | 3.12.5         | -                                                               |
 | Python VSC Extension            | 2024.22.2      | -                                                               |
 | PyAutoGUI                       | 0.9.54         | -                                                               | 
-| yperclip                        | 1.9.0          | -                                                               |            
+| Pyperclip                       | 1.9.0          | -                                                               |            
 | Pytest                          | 8.3.4          | -                                                               |
 | Faker                           | 35.2.0         | -                                                               |
 | pytest-html                     | 4.1.1          | -                                                               |

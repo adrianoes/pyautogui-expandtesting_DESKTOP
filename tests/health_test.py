@@ -1,9 +1,6 @@
 import time
 import os
-import pyautogui
 import json
-import pyperclip
-from faker import Faker
 
 def test_xterm_curl():
     os.environ["DISPLAY"] = ":99"  # Usa o display virtual do Xvfb
@@ -22,46 +19,24 @@ def test_xterm_curl():
     # Comando cURL
     curl_command = "curl -X 'GET' 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json'"
 
-    # Digita e executa o comando cURL no terminal
-    pyautogui.write(curl_command, interval=0.05)
-    print("Comando cURL digitado.")
-    time.sleep(5)
-    pyautogui.press("enter")
-    print("Comando cURL executado.")
+    # Executa o comando curl e redireciona a resposta diretamente para o clipboard
+    os.system(f"{curl_command} | xclip -selection clipboard")
 
-    time.sleep(10)  # Aguarda a resposta ser impressa no terminal
+    # Agora, vamos pegar o conteúdo do clipboard
+    response_from_clipboard = os.popen("xclip -selection clipboard -o").read().strip()  # Captura o conteúdo do clipboard
 
-    # Copia a saída do último comando para a área de transferência
-    pyautogui.write("!! | xsel -bi", interval=0.05)
-    pyautogui.press("enter")
-    time.sleep(2)  # Espera a cópia ser processada
+    # Exibe a resposta copiada
+    print(f"Resposta copiada do clipboard: {response_from_clipboard}")
 
-    # Obtém o conteúdo da área de transferência
-    response_text = pyperclip.paste().strip()
-
-    # Imprime a resposta copiada do terminal para verificação
-    print("Resposta copiada do terminal:", response_text)
-
-    # Gera um nome aleatório para a variável
-    faker = Faker()
-    randomVarName = f"data_{faker.hexify(text='^^^^^^^^^^^^')}"  # Exemplo: "data_a1b2c3d4e5f6"
-
+    # Converte a resposta para JSON
     try:
-        # Converte para dicionário JSON
-        response_json = json.loads(response_text)
+        response_json = json.loads(response_from_clipboard)
         success = response_json.get("success")
         status = response_json.get("status")
         message = response_json.get("message")
 
-        # Armazena os valores na variável aleatória
-        globals()[randomVarName] = {
-            "success": success,
-            "status": status,
-            "message": message
-        }
-
+        # Exibe os dados extraídos
         print(f"Dados extraídos: success={success}, status={status}, message='{message}'")
-        print(f"Dados armazenados na variável aleatória: {randomVarName}")
 
         # Assertions
         assert success == True, "Erro: success não é True"
