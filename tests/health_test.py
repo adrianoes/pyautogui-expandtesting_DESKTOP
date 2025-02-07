@@ -19,8 +19,8 @@ def test_xterm_curl():
     # Comando cURL
     curl_command = "curl -X 'GET' 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json'"
 
-    # Executa o comando curl e redireciona a resposta diretamente para o clipboard
-    os.system(f"{curl_command} | xclip -selection clipboard")
+    # Exibe a saída do comando curl no terminal e ao mesmo tempo copia para o clipboard
+    os.system(f"{curl_command} | tee /dev/tty | xclip -selection clipboard")
 
     # Agora, vamos pegar o conteúdo do clipboard
     response_from_clipboard = os.popen("xclip -selection clipboard -o").read().strip()  # Captura o conteúdo do clipboard
