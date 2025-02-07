@@ -77,4 +77,4 @@ def test_xterm_curl():
     os.system("pkill xterm")
 
 # Executa o teste
-# test_xterm_curl()
+test_xterm_curl()
