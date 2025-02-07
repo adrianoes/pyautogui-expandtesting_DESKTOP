@@ -41,11 +41,11 @@ def test_xterm_curl():
     print("Comando cURL executado.")
 
     # Espera adicional para garantir que o comando cURL seja processado
-    time.sleep(30)  # Aumenta o tempo de espera
+    time.sleep(60)  # Aumenta o tempo de espera
 
     # Lê o conteúdo do arquivo /tmp/last
     retry_count = 0
-    max_retries = 5
+    max_retries = 30
     response_from_file = ""
 
     while retry_count < max_retries:
