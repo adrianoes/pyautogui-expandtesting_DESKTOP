@@ -26,7 +26,8 @@ def test_xterm_curl():
     # Verifica se já há um script de captura ativo (evita redirecionamento duplicado)
     if not os.path.exists("/tmp/last"):
         print("Configurando captura de saída do terminal...")
-        save_output_script = """trap 'echo "capturando saída..." > /tmp/last' DEBUG"""
+        # Redireciona a saída do comando curl diretamente para o arquivo /tmp/last
+        save_output_script = """curl -X 'GET' 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json' > /tmp/last"""
         pyautogui.write(save_output_script, interval=0.1)
         pyautogui.press("enter")
         time.sleep(2)  # Aguarda mais tempo para garantir que o redirecionamento seja configurado
