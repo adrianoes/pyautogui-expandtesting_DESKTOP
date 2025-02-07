@@ -77,4 +77,4 @@ def test_xterm_curl():
         print("❌ Erro ao converter a resposta para JSON!")
 
 # Executa o teste
-test_xterm_curl()
+# test_xterm_curl()
