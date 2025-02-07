@@ -53,9 +53,6 @@ def test_xterm_curl():
     # Exibe a resposta capturada
     print(f"Resposta capturada: {response_from_file}")
 
-    # **Fecha o terminal após capturar a resposta**
-    os.system("pkill xterm")
-
     # Converte a resposta para JSON
     try:
         response_json = json.loads(response_from_file)
@@ -75,6 +72,9 @@ def test_xterm_curl():
 
     except json.JSONDecodeError:
         print("❌ Erro ao converter a resposta para JSON!")
+    
+        # **Fecha o terminal após capturar a resposta**
+    os.system("pkill xterm")
 
 # Executa o teste
 # test_xterm_curl()
