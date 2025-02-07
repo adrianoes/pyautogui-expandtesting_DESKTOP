@@ -35,11 +35,11 @@ def test_xterm_curl():
         print("Captura de saída já configurada. Pulando essa etapa.")
 
     # Comando cURL
-    curl_command = "curl -X 'GET' 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json'"
+    # curl_command = "curl -X 'GET' 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json'"
     
-    pyautogui.write(curl_command, interval=0.15)
-    pyautogui.press("enter")
-    print("Comando cURL executado.")
+    # pyautogui.write(curl_command, interval=0.15)
+    # pyautogui.press("enter")
+    # print("Comando cURL executado.")
 
     # Espera adicional para garantir que o comando cURL seja processado
     time.sleep(10)  # Aumenta o tempo de espera
