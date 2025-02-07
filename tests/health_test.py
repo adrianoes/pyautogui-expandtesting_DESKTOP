@@ -31,13 +31,10 @@ def test_xterm_curl():
 
     time.sleep(10)  # Aguarda a resposta ser impressa no terminal
 
-    # Seleciona todo o conteúdo do terminal
-    pyautogui.hotkey("ctrl", "shift", "a")
-    time.sleep(2)
-
-    # Copia para a área de transferência
-    pyautogui.hotkey("ctrl", "shift", "c")
-    time.sleep(2)
+    # Copia a saída do último comando para a área de transferência
+    pyautogui.write("!! | xsel -bi", interval=0.05)
+    pyautogui.press("enter")
+    time.sleep(2)  # Espera a cópia ser processada
 
     # Obtém o conteúdo da área de transferência
     response_text = pyperclip.paste().strip()
