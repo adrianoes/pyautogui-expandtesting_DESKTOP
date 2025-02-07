@@ -6,38 +6,44 @@ import json
 def test_xterm_curl():
     os.environ["DISPLAY"] = ":99"
 
+    # Verifica se o terminal já está aberto
     existing_process = os.popen("pgrep xterm").read().strip()
     
     if not existing_process:
         print("Abrindo novo terminal xterm...")
         os.system("xterm &")
-        time.sleep(5)
+        time.sleep(5)  # Espera o terminal abrir
     else:
         print(f"xterm já estava em execução (PID: {existing_process}). Não abrindo novo terminal.")
 
+    # Aguarda o terminal abrir completamente
     time.sleep(2)
 
+    # Garante que o terminal tenha foco
     pyautogui.hotkey("alt", "tab")
     time.sleep(1)
 
+    # Verifica se já há um script de captura ativo (evita redirecionamento duplicado)
     if not os.path.exists("/tmp/last"):
         print("Configurando captura de saída do terminal...")
         save_output_script = """exec 3>&1; trap 'exec 1>&3; [ -f /tmp/current ] && mv /tmp/current /tmp/last; exec > >(tee /tmp/current)' DEBUG"""
         pyautogui.write(save_output_script, interval=0.1)
         pyautogui.press("enter")
-        time.sleep(1)
+        time.sleep(2)  # Aguarda mais tempo para garantir que o redirecionamento seja configurado
     else:
         print("Captura de saída já configurada. Pulando essa etapa.")
 
+    # Comando cURL
     curl_command = "curl -X 'GET' 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json'"
     
     pyautogui.write(curl_command, interval=0.15)
     pyautogui.press("enter")
     print("Comando cURL executado.")
 
-    time.sleep(6)
+    # Espera adicional para garantir que o comando cURL seja processado
+    time.sleep(30)  # Aumenta o tempo de espera
 
-    # 🔍 Espera ativa para garantir que o arquivo /tmp/last esteja preenchido
+    # Lê o conteúdo do arquivo /tmp/last
     retry_count = 0
     max_retries = 5
     response_from_file = ""
@@ -49,7 +55,7 @@ def test_xterm_curl():
             if response_from_file:
                 break  # Sai do loop assim que encontrar conteúdo
         print(f"Tentativa {retry_count + 1}: Arquivo /tmp/last ainda vazio, aguardando...")
-        time.sleep(2)
+        time.sleep(3)  # Aumenta o tempo de espera entre as tentativas
         retry_count += 1
 
     print(f"Resposta capturada: {response_from_file}")
@@ -71,5 +77,5 @@ def test_xterm_curl():
     except json.JSONDecodeError:
         print("❌ Erro ao converter a resposta para JSON!")
 
+    # Fecha o terminal após capturar a resposta
     os.system("pkill xterm")
-
