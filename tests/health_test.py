@@ -1,4 +1,5 @@
 import time
+import pyautogui
 import os
 import json
 
@@ -14,19 +15,34 @@ def test_xterm_curl():
     else:
         print("xterm já estava em execução.")
 
+    # Aguarda o terminal abrir completamente
     time.sleep(2)
 
     # Comando cURL
     curl_command = "curl -X 'GET' 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json'"
 
-    # Executa o comando curl normalmente, e exibe a resposta no terminal
-    os.system(curl_command)  # O comando curl será executado normalmente no terminal
+    # Escreve o comando cURL no terminal
+    pyautogui.write(curl_command)
+    pyautogui.press("enter")  # Executa o comando no terminal
+    print("Comando cURL executado.")
 
-    # Aguarda um pouco para garantir que a resposta foi gerada no terminal
-    time.sleep(3)
+    # Espera alguns segundos para a resposta aparecer no terminal
+    time.sleep(5)  # Ajuste o tempo se necessário
 
-    # Pega a resposta do terminal com o xclip
-    response_from_clipboard = os.popen("xclip -selection clipboard -o").read().strip()  # Captura o conteúdo do clipboard
+    # Simula a seleção do conteúdo do terminal usando o atalho 'Ctrl+Shift+A'
+    pyautogui.hotkey("ctrl", "shift", "a")  # Seleciona todo o conteúdo do terminal
+    time.sleep(1)  # Espera a seleção ser feita
+
+    # Copia o conteúdo selecionado para o clipboard
+    pyautogui.hotkey("ctrl", "shift", "c")  # Copia a seleção
+    time.sleep(1)  # Aguarda um pouco para garantir que a cópia foi feita
+
+    # Agora, o conteúdo está no clipboard, vamos capturá-lo
+    os.system("xclip -selection clipboard -o > clipboard_output.txt")  # Usa xclip para salvar a resposta em um arquivo temporário
+
+    # Lê o conteúdo do arquivo temporário
+    with open('clipboard_output.txt', 'r') as file:
+        response_from_clipboard = file.read().strip()
 
     # Exibe a resposta copiada
     print(f"Resposta copiada do clipboard: {response_from_clipboard}")
