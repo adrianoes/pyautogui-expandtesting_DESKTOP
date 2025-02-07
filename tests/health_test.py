@@ -1,41 +1,71 @@
 import time
 import os
 import pyautogui
+import pyperclip  # Para copiar e colar a resposta do terminal
+import json
 
-def test_open_xterm():
-    # Configura a variável DISPLAY para usar o ambiente virtual do Xvfb
-    os.environ["DISPLAY"] = ":99"  # Isso garante que o xterm será exibido no display virtual do Xvfb
+def test_xterm_curl():
+    os.environ["DISPLAY"] = ":99"  # Usa o display virtual do Xvfb
 
-    # Verifica se o processo xterm já está em execução
+    # Verifica se o terminal já está aberto
     existing_process = os.popen("pgrep xterm").read()
     if not existing_process:
-        # Abre o terminal xterm diretamente
-        os.system("xterm &")  # Abre o terminal xterm diretamente
-        time.sleep(5)  # Espera o terminal abrir
+        os.system("xterm &")  
+        time.sleep(5)  
         print("Terminal xterm foi aberto.")
     else:
-        print("xterm já está em execução.")
+        print("xterm já estava em execução.")
 
-    # Aguarda um curto período antes de digitar o comando
     time.sleep(2)
 
     # Comando cURL que será digitado no terminal
     curl_command = "curl -X 'GET' 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json'"
 
-    # Digita o comando no terminal
-    pyautogui.write(curl_command, interval=0.05)  # Intervalo adiciona um leve delay entre as teclas
+    # Digita o comando
+    pyautogui.write(curl_command, interval=0.05)
     print("Comando cURL digitado.")
 
-    # Aguarda 5 segundos antes de pressionar Enter
-    time.sleep(5)
+    time.sleep(5)  # Aguarda antes de pressionar Enter
 
-    # Pressiona Enter para executar o comando
+    # Pressiona Enter para executar
     pyautogui.press("enter")
     print("Comando cURL executado.")
 
-    # Aguarda 20 segundos para garantir que a resposta seja exibida
-    time.sleep(20)
-    print("Resposta aguardada por 20 segundos.")
+    time.sleep(10)  # Espera a resposta aparecer no terminal
 
-# Execute a função para testar
-test_open_xterm()
+    # Copia a saída do terminal (Seleciona tudo e copia)
+    pyautogui.hotkey("ctrl", "a")  # Seleciona tudo no terminal
+    time.sleep(1)
+    pyautogui.hotkey("ctrl", "c")  # Copia o conteúdo
+    time.sleep(1)
+
+    # Obtém a resposta copiada
+    response_text = pyperclip.paste()
+    print("Resposta copiada do terminal:", response_text)
+
+    # Filtra o JSON dentro das chaves {}
+    json_start = response_text.find("{")
+    json_end = response_text.rfind("}") + 1
+    json_string = response_text[json_start:json_end]
+
+    # Converte para dicionário
+    try:
+        response_json = json.loads(json_string)
+        success = response_json.get("success")
+        status = response_json.get("status")
+        message = response_json.get("message")
+
+        print(f"Dados extraídos: success={success}, status={status}, message='{message}'")
+
+        # Assertions
+        assert success == True, "Erro: success não é True"
+        assert status == 200, "Erro: status não é 200"
+        assert message == "Notes API is Running", "Erro: mensagem incorreta"
+
+        print("✅ Teste passou com sucesso!")
+
+    except json.JSONDecodeError:
+        print("❌ Erro ao converter a resposta para JSON!")
+
+# Executa o teste
+test_xterm_curl()
