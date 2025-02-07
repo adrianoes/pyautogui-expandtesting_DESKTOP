@@ -18,6 +18,10 @@ def test_xterm_curl():
     # Aguarda o terminal abrir completamente
     time.sleep(2)
 
+    # Maximiza a janela do terminal
+    pyautogui.hotkey("ctrl", "alt", "shift", "f")  # Maximiza a janela do terminal no X11
+    time.sleep(1)  # Aguarda a maximização
+
     # Comando cURL
     curl_command = "curl -X 'GET' 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json'"
 
@@ -29,12 +33,26 @@ def test_xterm_curl():
     # Espera alguns segundos para a resposta aparecer no terminal
     time.sleep(5)  # Ajuste o tempo se necessário
 
-    # Simula a seleção do conteúdo do terminal usando o atalho 'Ctrl+Shift+A'
-    pyautogui.hotkey("ctrl", "shift", "a")  # Seleciona todo o conteúdo do terminal
-    time.sleep(1)  # Espera a seleção ser feita
+    # Seleção do conteúdo do terminal usando o mouse:
+    # Vamos começar no canto inferior da tela e arrastar até o topo
+    screen_width, screen_height = pyautogui.size()
 
-    # Copia o conteúdo selecionado para o clipboard
-    pyautogui.hotkey("ctrl", "shift", "c")  # Copia a seleção
+    # Coordenadas para clicar no canto inferior e arrastar até o topo
+    start_x = screen_width // 2
+    start_y = screen_height - 10  # Canto inferior
+    end_y = 10  # Canto superior
+
+    # Clica no canto inferior e arrasta até o topo
+    pyautogui.moveTo(start_x, start_y)
+    pyautogui.mouseDown()
+    pyautogui.moveTo(start_x, end_y, duration=2)  # Arrasta para o topo
+    pyautogui.mouseUp()
+
+    # Aguarda a seleção ser feita
+    time.sleep(1)
+
+    # Copia o conteúdo selecionado
+    pyautogui.hotkey("ctrl", "c")  # Copia a seleção
     time.sleep(1)  # Aguarda um pouco para garantir que a cópia foi feita
 
     # Agora, o conteúdo está no clipboard, vamos capturá-lo
