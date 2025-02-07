@@ -26,25 +26,17 @@ def test_xterm_curl():
     # Garante que o diretório resources existe
     os.makedirs("./resources", exist_ok=True)
 
-    # Comando cURL (sem redirecionamento para arquivo)
-    curl_command = "curl -X 'GET' 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json'"
+    # Comando cURL com redirecionamento de saída para o arquivo JSON
+    curl_command = f"curl -X 'GET' 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json' > {json_filename}"
 
-    # Digita e executa o comando cURL
+    # Digita e executa o comando cURL no terminal
     pyautogui.write(curl_command, interval=0.05)
-    print("Comando cURL digitado.")
+    print("Comando cURL digitado com redirecionamento.")
     time.sleep(5)
     pyautogui.press("enter")
     print("Comando cURL executado.")
 
-    time.sleep(5)  # Aguarda a resposta aparecer no terminal
-
-    # Digita o comando para salvar a saída em um arquivo
-    save_command = f" > {json_filename}"
-    pyautogui.write(save_command, interval=0.05)
-    pyautogui.press("enter")
-    print(f"Saída do cURL redirecionada para {json_filename}")
-
-    time.sleep(10)  # Espera o arquivo ser salvo
+    time.sleep(10)  # Aguarda o terminal processar e o arquivo ser salvo
 
     # Lê o conteúdo do arquivo
     try:
