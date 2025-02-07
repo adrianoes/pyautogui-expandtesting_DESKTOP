@@ -38,6 +38,8 @@ def test_xterm_curl():
 
     # Obtém o conteúdo da área de transferência
     response_text = pyperclip.paste().strip()
+
+    # Imprime a resposta copiada do terminal para verificação
     print("Resposta copiada do terminal:", response_text)
 
     # Gera um nome aleatório para a variável
