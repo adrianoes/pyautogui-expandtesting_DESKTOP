@@ -2,6 +2,7 @@ import time
 import os
 import pyautogui
 import json
+import pyperclip
 from faker import Faker
 
 def test_xterm_curl():
@@ -18,39 +19,50 @@ def test_xterm_curl():
 
     time.sleep(2)
 
-    # Gera um nome aleatório para o arquivo JSON
-    faker = Faker()
-    randomData = faker.hexify(text='^^^^^^^^^^^^')  # Exemplo: "a1b2c3d4e5f6"
-    json_filename = f"./resources/test_data_{randomData}.json"
-
-    # Garante que o diretório resources existe
-    os.makedirs("./resources", exist_ok=True)
-
-    # Comando cURL com redirecionamento de saída para o arquivo JSON
-    curl_command = f"curl -X 'GET' 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json' > {json_filename}"
+    # Comando cURL
+    curl_command = "curl -X 'GET' 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json'"
 
     # Digita e executa o comando cURL no terminal
     pyautogui.write(curl_command, interval=0.05)
-    print("Comando cURL digitado com redirecionamento.")
+    print("Comando cURL digitado.")
     time.sleep(5)
     pyautogui.press("enter")
     print("Comando cURL executado.")
 
-    time.sleep(10)  # Aguarda o terminal processar e o arquivo ser salvo
+    time.sleep(10)  # Aguarda a resposta ser impressa no terminal
 
-    # Lê o conteúdo do arquivo
+    # Seleciona todo o conteúdo do terminal
+    pyautogui.hotkey("ctrl", "shift", "a")
+    time.sleep(2)
+
+    # Copia para a área de transferência
+    pyautogui.hotkey("ctrl", "shift", "c")
+    time.sleep(2)
+
+    # Obtém o conteúdo da área de transferência
+    response_text = pyperclip.paste().strip()
+    print("Resposta copiada do terminal:", response_text)
+
+    # Gera um nome aleatório para a variável
+    faker = Faker()
+    randomVarName = f"data_{faker.hexify(text='^^^^^^^^^^^^')}"  # Exemplo: "data_a1b2c3d4e5f6"
+
     try:
-        with open(json_filename, "r") as file:
-            response_text = file.read().strip()
-            print("Resposta capturada do terminal:", response_text)
-
         # Converte para dicionário JSON
         response_json = json.loads(response_text)
         success = response_json.get("success")
         status = response_json.get("status")
         message = response_json.get("message")
 
+        # Armazena os valores na variável aleatória
+        globals()[randomVarName] = {
+            "success": success,
+            "status": status,
+            "message": message
+        }
+
         print(f"Dados extraídos: success={success}, status={status}, message='{message}'")
+        print(f"Dados armazenados na variável aleatória: {randomVarName}")
 
         # Assertions
         assert success == True, "Erro: success não é True"
@@ -59,8 +71,8 @@ def test_xterm_curl():
 
         print("✅ Teste passou com sucesso!")
 
-    except (json.JSONDecodeError, FileNotFoundError):
-        print("❌ Erro ao converter a resposta para JSON ou arquivo não encontrado!")
+    except json.JSONDecodeError:
+        print("❌ Erro ao converter a resposta para JSON!")
 
 # Executa o teste
 test_xterm_curl()
