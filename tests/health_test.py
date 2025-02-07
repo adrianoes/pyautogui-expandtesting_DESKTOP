@@ -6,45 +6,44 @@ import json
 def test_xterm_curl():
     os.environ["DISPLAY"] = ":99"
 
-    # Verifica se o terminal já está aberto
+    # Check if the terminal is already open
     existing_process = os.popen("pgrep xterm").read().strip()
     
     if not existing_process:
-        print("Abrindo novo terminal xterm...")
-        os.system("xterm -fa 'Monospace' -fs 12 &")  # Forçando uma fonte padrão para evitar erros
-        time.sleep(5)  # Espera o terminal abrir
+        print("Opening new xterm terminal...")
+        os.system("xterm -fa 'Monospace' -fs 12 &")  # Forcing a default font to avoid errors
+        time.sleep(5)  # Wait for the terminal to open
     else:
-        print(f"xterm já estava em execução (PID: {existing_process}). Não abrindo novo terminal.")
+        print(f"xterm is already running (PID: {existing_process}). Not opening a new terminal.")
 
-    # Aguarda o terminal abrir completamente
+    # Wait for the terminal to open completely
     time.sleep(2)
 
-    # Garante que o terminal tenha foco
+    # Ensure the terminal has focus
     pyautogui.hotkey("alt", "tab")
     time.sleep(1)
 
-    # Verifica se já há um script de captura ativo (evita redirecionamento duplicado)
+    # Check if there is already an active capture script (avoids duplicate redirection)
     if not os.path.exists("/tmp/last"):
-        print("Configurando captura de saída do terminal...")
-        # Redireciona a saída do comando curl diretamente para o arquivo /tmp/last
+        print("Setting up terminal output capture...")
+        # Redirect the output of the curl command directly to the /tmp/last file
         save_output_script = """curl -X 'GET' 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json' > /tmp/last"""
         pyautogui.write(save_output_script, interval=0.1)
         pyautogui.press("enter")
-        time.sleep(2)  # Aguarda mais tempo para garantir que o redirecionamento seja configurado
+        time.sleep(2)  # Wait more time to ensure the redirection is set up
     else:
-        print("Captura de saída já configurada. Pulando essa etapa.")
+        print("Output capture already set up. Skipping this step.")
 
-    # Comando cURL
+    # Command cURL
     # curl_command = "curl -X 'GET' 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json'"
-    
     # pyautogui.write(curl_command, interval=0.15)
     # pyautogui.press("enter")
-    # print("Comando cURL executado.")
+    # print("cURL command executed.")
 
-    # Espera adicional para garantir que o comando cURL seja processado
-    time.sleep(10)  # Aumenta o tempo de espera
+    # Additional wait time to ensure the cURL command is processed
+    time.sleep(10)  # Increase the wait time
 
-    # Verifica a resposta no arquivo /tmp/last
+    # Check the response in the /tmp/last file
     response_from_file = ""
     retry_count = 0
     max_retries = 10
@@ -54,14 +53,14 @@ def test_xterm_curl():
             with open("/tmp/last", "r") as file:
                 response_from_file = file.read().strip()
             if response_from_file:
-                break  # Sai do loop assim que encontrar conteúdo
-        print(f"Tentativa {retry_count + 1}: Arquivo /tmp/last ainda vazio, aguardando...")
-        time.sleep(3)  # Aumenta o tempo de espera entre as tentativas
+                break  # Exit the loop as soon as content is found
+        print(f"Attempt {retry_count + 1}: /tmp/last file still empty, waiting...")
+        time.sleep(3)  # Increase the wait time between retries
         retry_count += 1
 
-    print(f"Resposta capturada: {response_from_file}")
+    print(f"Captured response: {response_from_file}")
 
-    # Se a resposta foi capturada, tentamos decodificar em JSON
+    # If the response was captured, try to decode it in JSON
     if response_from_file:
         try:
             response_json = json.loads(response_from_file)
@@ -69,18 +68,18 @@ def test_xterm_curl():
             status = response_json.get("status")
             message = response_json.get("message")
 
-            print(f"Dados extraídos: success={success}, status={status}, message='{message}'")
+            print(f"Extracted data: success={success}, status={status}, message='{message}'")
 
-            assert success == True, "Erro: success não é True"
-            assert status == 200, "Erro: status não é 200"
-            assert message == "Notes API is Running", "Erro: mensagem incorreta"
+            assert success == True, "Error: success is not True"
+            assert status == 200, "Error: status is not 200"
+            assert message == "Notes API is Running", "Error: incorrect message"
 
-            print("✅ Teste passou com sucesso!")
+            print("✅ Test passed successfully!")
 
         except json.JSONDecodeError:
-            print("❌ Erro ao converter a resposta para JSON!")
+            print("❌ Error converting the response to JSON!")
     else:
-        print("❌ A resposta não foi capturada corretamente.")
+        print("❌ Response was not captured correctly.")
 
-    # Fecha o terminal após capturar a resposta
+    # Close the terminal after capturing the response
     os.system("pkill xterm")
