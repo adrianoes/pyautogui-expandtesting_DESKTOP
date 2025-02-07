@@ -18,20 +18,20 @@ def test_xterm_curl():
     # Aguarda o terminal abrir completamente
     time.sleep(2)
 
-    # Maximiza a janela do terminal
-    pyautogui.hotkey("ctrl", "alt", "shift", "f")  # Maximiza a janela do terminal no X11
-    time.sleep(1)  # Aguarda a maximização
+    # Maximiza a janela do terminal com o atalho Fn + Alt + F10
+    pyautogui.hotkey("fn", "alt", "f10")  # Maximiza a janela
+    time.sleep(1)  # Aguarda um pouco para garantir que a janela foi maximizada
 
     # Comando cURL
     curl_command = "curl -X 'GET' 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json'"
 
-    # Escreve o comando cURL no terminal
-    pyautogui.write(curl_command)
+    # Escreve o comando cURL no terminal com mais intervalo para evitar erros de digitação
+    pyautogui.write(curl_command, interval=0.1)  # Intervalo de 0.1s entre cada letra
     pyautogui.press("enter")  # Executa o comando no terminal
     print("Comando cURL executado.")
 
-    # Espera alguns segundos para a resposta aparecer no terminal
-    time.sleep(5)  # Ajuste o tempo se necessário
+    # Espera mais tempo para garantir que a resposta apareça corretamente no terminal
+    time.sleep(6)  # Ajuste o tempo se necessário, dependendo da resposta da API
 
     # Seleção do conteúdo do terminal usando o mouse:
     # Vamos começar no canto inferior da tela e arrastar até o topo
