@@ -3,24 +3,20 @@ import pyautogui
 import os
 import json
 
-def test_xterm_curl():
+def test_health_curl():
+    #starting the display
     os.environ["DISPLAY"] = ":99"
-
-    # Check if the terminal is already open
-    existing_process = os.popen("pgrep xterm").read().strip()
     
+    # Check if the terminal is already open
+    existing_process = os.popen("pgrep xterm").read().strip()    
     if not existing_process:
         print("Opening new xterm terminal...")
         os.system("xterm -fa 'Monospace' -fs 12 &")  # Forcing a default font to avoid errors
         time.sleep(5)  # Wait for the terminal to open
     else:
         print(f"xterm is already running (PID: {existing_process}). Not opening a new terminal.")
-
-    # Wait for the terminal to open completely
-    time.sleep(2)
-
-    # Ensure the terminal has focus
-    pyautogui.hotkey("alt", "tab")
+    time.sleep(2)    
+    pyautogui.hotkey("alt", "tab")# Ensure the terminal has focus
     time.sleep(1)
 
     # Check if there is already an active capture script (avoids duplicate redirection)
@@ -34,7 +30,7 @@ def test_xterm_curl():
     else:
         print("Output capture already set up. Skipping this step.")
 
-    # Command cURL
+    # Command cURL - If it is a get request, it ca be requested twice so you can observe the proper answer in the terminal screen.
     # curl_command = "curl -X 'GET' 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json'"
     # pyautogui.write(curl_command, interval=0.15)
     # pyautogui.press("enter")
@@ -47,7 +43,6 @@ def test_xterm_curl():
     response_from_file = ""
     retry_count = 0
     max_retries = 10
-
     while retry_count < max_retries:
         if os.path.exists("/tmp/last") and os.path.getsize("/tmp/last") > 0:
             with open("/tmp/last", "r") as file:
@@ -57,7 +52,6 @@ def test_xterm_curl():
         print(f"Attempt {retry_count + 1}: /tmp/last file still empty, waiting...")
         time.sleep(3)  # Increase the wait time between retries
         retry_count += 1
-
     print(f"Captured response: {response_from_file}")
 
     # If the response was captured, try to decode it in JSON
@@ -67,15 +61,11 @@ def test_xterm_curl():
             success = response_json.get("success")
             status = response_json.get("status")
             message = response_json.get("message")
-
             print(f"Extracted data: success={success}, status={status}, message='{message}'")
-
             assert success == True, "Error: success is not True"
             assert status == 200, "Error: status is not 200"
             assert message == "Notes API is Running", "Error: incorrect message"
-
             print("✅ Test passed successfully!")
-
         except json.JSONDecodeError:
             print("❌ Error converting the response to JSON!")
     else:
