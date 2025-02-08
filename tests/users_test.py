@@ -389,7 +389,7 @@ def starting_terminal():
     pyautogui.hotkey("alt", "tab")  # Ensure the terminal has focus
     time.sleep(1)
 
-def delete_json_file():
+def delete_json_file(randomData):
     # Delete the JSON file after testing
     json_file_path = f"./resources/file-{randomData}.json"
     os.remove(json_file_path)

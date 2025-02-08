@@ -4,20 +4,11 @@ import os
 import json
 
 def test_health_curl():
+
     #starting the display
     os.environ["DISPLAY"] = ":99"
     
-    # Check if the terminal is already open
-    existing_process = os.popen("pgrep xterm").read().strip()    
-    if not existing_process:
-        print("Opening new xterm terminal...")
-        os.system("xterm -fa 'Monospace' -fs 12 &")  # Forcing a default font to avoid errors
-        time.sleep(5)  # Wait for the terminal to open
-    else:
-        print(f"xterm is already running (PID: {existing_process}). Not opening a new terminal.")
-    time.sleep(2)    
-    pyautogui.hotkey("alt", "tab")# Ensure the terminal has focus
-    time.sleep(1)
+    starting_terminal()
 
     # Check if there is already an active capture script (avoids duplicate redirection)
     if not os.path.exists("/tmp/last"):
@@ -73,3 +64,16 @@ def test_health_curl():
 
     # Close the terminal after capturing the response
     os.system("pkill xterm")
+
+def starting_terminal():
+    # Check if the terminal is already open
+    existing_process = os.popen("pgrep xterm").read().strip()    
+    if not existing_process:
+        print("Opening new xterm terminal...")
+        os.system("xterm -fa 'Monospace' -fs 12 &")  # Forcing a default font to avoid errors
+        time.sleep(5)  # Wait for the terminal to open
+    else:
+        print(f"xterm is already running (PID: {existing_process}). Not opening a new terminal.")
+    time.sleep(2)    
+    pyautogui.hotkey("alt", "tab")  # Ensure the terminal has focus
+    time.sleep(1)
