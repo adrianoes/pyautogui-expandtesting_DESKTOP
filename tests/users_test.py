@@ -78,7 +78,7 @@ def test_create_user_curl():
     os.system("pkill xterm")
 
     #delete .json file
-    delete_json_file()
+    delete_json_file(randomData)
 
 def test_login_user_curl():
     #creating random number so we can use custom commands
@@ -164,7 +164,7 @@ def test_login_user_curl():
     os.system("pkill xterm")
     
     #delete .json file
-    delete_json_file()
+    delete_json_file(randomData)
 
 def test_delete_user_curl():
     #creating random number so we can use custom commands
@@ -220,7 +220,7 @@ def test_delete_user_curl():
     os.system("pkill xterm")
     
     #delete .json file
-    delete_json_file()
+    delete_json_file(randomData)
 
 def create_user(randomData):
     # User registration
