@@ -60,6 +60,7 @@ def test_create_user_curl():
     print("✅ User registration test passed successfully!")
 
     # Save user credentials in a JSON file
+    os.makedirs('./resources', exist_ok=True)
     user_data = {
         'user_email': user_email,
         'user_id': user_id,
@@ -120,6 +121,7 @@ def test_create_user_curl():
     print("✅ Login test passed successfully!")
 
     # Save user credentials in a JSON file
+    os.makedirs('./resources', exist_ok=True)
     user_data = {
         'user_email': user_email,
         'user_id': user_id,
