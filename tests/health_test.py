@@ -56,7 +56,7 @@ def test_health_curl():
             assert success == True, "Error: success is not True"
             assert status == 200, "Error: status is not 200"
             assert message == "Notes API is Running", "Error: incorrect message"
-            print("✅ Test passed successfully!")
+            print("✅ API health checks!")
         except json.JSONDecodeError:
             print("❌ Error converting the response to JSON!")
     else:
