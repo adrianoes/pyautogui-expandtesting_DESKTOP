@@ -1,6 +1,0 @@
-pyautogui==0.9.53         # Para automação de GUI
-pyperclip==1.8.2          # Para copiar e colar conteúdo no clipboard
-pytest==8.3.4             # Framework de testes
-Faker==35.2.0            # Biblioteca para gerar dados falsos (para uso futuro)
-pytest-html==4.1.1        # Para gerar relatórios HTML com o pytest                  # Necessário para pyperclip funcionar no Linux
-
