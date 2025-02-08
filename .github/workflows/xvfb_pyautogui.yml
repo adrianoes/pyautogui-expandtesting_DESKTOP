@@ -19,9 +19,19 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y xclip xvfb x11-utils xdotool xauth ffmpeg imagemagick python3-tk fluxbox xterm
+          sudo apt install -y xvfb x11-utils xauth ffmpeg imagemagick python3-tk fluxbox xterm
           python3 -m pip install --upgrade pip
-          python3 -m pip install pytest pyautogui pyperclip Faker pytest-html
+          python3 -m pip install pytest pyautogui Faker pytest-html
+
+      - name: List versions of apt dependencies
+        run: |
+          echo "Versions of apt dependencies:"
+          apt list --installed xvfb x11-utils xauth ffmpeg imagemagick python3-tk fluxbox xterm
+
+      - name: List versions of pip dependencies
+        run: |
+          echo "Versions of pip dependencies:"
+          pip show pytest pyautogui Faker pytest-html
 
       - name: Set up graphical environment
         run: |

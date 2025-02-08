@@ -14,6 +14,14 @@ Desktop testing in [expandtesting](https://practice.expandtesting.com/notes/api/
 | Pytest                          | 8.3.4          | -                                                               |
 | Faker                           | 35.2.0         | -                                                               |
 | pytest-html                     | 4.1.1          | -                                                               |
+| xvfb                            | 4.1.1          | -                                                               |
+| x11-utils                       | 4.1.1          | -                                                               |
+| xauth                           | 4.1.1          | -                                                               |
+| ffmpeg                          | 4.1.1          | -                                                               |
+| ImageMagick                     | 4.1.1          | -                                                               |
+| fluxbox                         | 4.1.1          | -                                                               |
+| xterm                           | 4.1.1          | -                                                               |
+| xvfb                            | 4.1.1          | -                                                               |
 
 # Installation:
 
@@ -27,7 +35,6 @@ Check then both to add both options in context menu.
 and keep all the other preferenced options as they are.
 - Look for Python in the extensions marketplace and install the one from Microsoft.
 - Open windows propmpt as admin and execute ```pip install pyautogui``` to install PyAutoGUI.
-- Open windows propmpt as admin and execute ```pip install pyperclip``` to install pyperclip.
 - Open windows prompt as admin and execute ```pip install pytest``` to install Pytest.
 - Open windows prompt as admin and execute ```pip install Faker``` to install Faker library.
 - Open windows prompt as admin and execute ```pip install pytest-html``` to install pytest-html plugin.
@@ -41,26 +48,25 @@ and keep all the other preferenced options as they are.
 - [expandtesting API documentation page](https://practice.expandtesting.com/notes/api/api-docs/)
 - [expandtesting API demonstration page](https://www.youtube.com/watch?v=bQYvS6EEBZc)
 - [PyAutoGUI](https://pypi.org/project/PyAutoGUI/)
-- [pyperclip](https://pypi.org/project/pyperclip/)
 - [ChatGPT](https://chatgpt.com/)
 - [pytest](https://pypi.org/project/pytest/)
 - [Faker](https://pypi.org/project/Faker/)
 - [pytest-html](https://pypi.org/project/pytest-html/)
-- [xclip](https://github.com/astrand/xclip)
 - [he Ultimate Guide to Install XVFB On Ubuntu 20.04](https://www.youtube.com/watch?v=ACYjKAMEvaQ)
 - [How to Install Xvfb on Ubuntu 20.04](https://neuronvm.com/docs/install-xvfb-on-ubuntu-20-04/)
 - [x11-utils](https://www.x.org/wiki/Releases/)
-- [xdotool](https://github.com/jordansissel/xdotool)
 - [xauth](https://linux.die.net/man/1/xauth)
 - [ffmpeg](https://ffmpeg.org/documentation.html)
 - [ImageMagick](https://imagemagick.org/script/index.php)
 - [python3-tk](https://wiki.python.org/moin/TkInter)
+- [fluxbox](https://fluxbox.org/)
+- [Fluxbox](https://wiki.archlinux.org/title/Fluxbox)
+- [xterm](https://www.root.cz/man/1/xterm/)
 - [Linux Commands Cheat Sheet](https://www.geeksforgeeks.org/linux-commands-cheat-sheet/)
 - [Reusing output from last command in Bash [duplicate]](https://stackoverflow.com/a/48398357)
 
 # Tips:
 
 - UI and API tests to send password reset link to user's email and API tests to verify a password reset token and reset a user's password must be tested manually as they rely on e-mail verification.
-- Navigate to the get_position.py directory and execute ```python get_position.py``` when theres is the need to find the coordinates of a point.
 - Workflow environment (Ubuntu) is different from local environment (Windows). Documentation will be updated on Ubuntu environmet soon. 
 - Python presented better performance calling functions from same files as tests. 
