@@ -43,42 +43,17 @@ jobs:
           xauth generate :99 . trusted
           export XAUTHORITY=$HOME/.Xauthority
 
-          # Usando fluxbox para a gerência de janelas
+          # Use fluxbox to manage window
           fluxbox -display :99 &  # Inicializa o fluxbox com display específico
-          sleep 3  # Espera o Fluxbox carregar completamente
+          sleep 3  # Wait for fluxbox to load
 
       - name: Create reports directory
         run: mkdir -p reports
-
-      - name: Capture initial screen
-        run: |
-          export DISPLAY=:99
-          import -window root reports/before_test.png
-        shell: /usr/bin/bash -e {0}
-
-      - name: Start recording screen
-        run: |
-          export DISPLAY=:99
-          ffmpeg -y -f x11grab -video_size 1920x1080 -i :99 -r 25 -pix_fmt yuv420p reports/test_recording.mp4 & # Captura a tela
-          echo $! > ffmpeg_pid.txt
 
       - name: Run Pytest (executa o teste que abrirá o terminal)
         run: |
           export DISPLAY=:99
           pytest ./tests -v --html=./reports/report.html --self-contained-html
-        shell: /usr/bin/bash -e {0}
-
-      - name: Capture final screen
-        run: |
-          export DISPLAY=:99
-          import -window root reports/final_test.png
-        shell: /usr/bin/bash -e {0}
-
-      - name: Stop screen recording
-        run: |
-          if [ -f ffmpeg_pid.txt ]; then
-            kill $(cat ffmpeg_pid.txt) || true  
-          fi
         shell: /usr/bin/bash -e {0}
 
       - name: Upload test report
