@@ -341,7 +341,7 @@ def test_change_user_password_curl():
         user_token = data['user_token']
 
     # Send PATCH request to update password
-    update_password_script = f"""curl -X 'PATCH' 'https://practice.expandtesting.com/notes/api/users/password' \
+    update_password_script = f"""curl -X 'PATCH' 'https://practice.expandtesting.com/notes/api/users/change-password' \
     -H 'accept: application/json' \
     -H 'x-auth-token: {user_token}' \
     -H 'Content-Type: application/x-www-form-urlencoded' \
