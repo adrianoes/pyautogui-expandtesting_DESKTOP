@@ -862,7 +862,9 @@ def delete_json_file(randomData):
     print(f"Deleted JSON file: {json_file_path}")
 
 def start_video_recording(test_name):
-    video_filename = f"/tmp/{test_name}_recording.mp4"
+    os.makedirs('reports/videos', exist_ok=True)
+    
+    video_filename = f"reports/videos/{test_name}_recording.mp4"  
     ffmpeg_command = [
         "ffmpeg", "-y", "-f", "x11grab", "-video_size", "1920x1080", "-i", ":99", 
         "-r", "25", "-pix_fmt", "yuv420p", video_filename

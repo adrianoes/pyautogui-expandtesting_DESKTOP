@@ -4,6 +4,7 @@ import pyautogui
 import os
 import json
 import subprocess
+import random
 
 def test_create_user_curl():
     # Start video recording for this specific test
@@ -23,7 +24,8 @@ def test_create_user_curl():
     fake = Faker()
     user_email = fake.company_email()
     user_name = fake.name()
-    user_password = fake.password()
+    password_length = random.randint(8, 28)
+    user_password = fake.password(length=password_length)
     save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/users/register' \
     -H 'accept: application/json' \
     -H 'Content-Type: application/x-www-form-urlencoded' \
@@ -380,8 +382,8 @@ def test_change_user_password_curl():
 
     # Generate a new password
     fake = Faker()
-    user_new_password = fake.password()
-
+    user_new_password_length = random.randint(8, 28)
+    user_new_password = fake.password(length=user_new_password_length)
     # Load user details from JSON file
     json_file_path = f"./resources/file-{randomData}.json"
     with open(json_file_path, 'r') as json_file:
@@ -578,7 +580,8 @@ def create_user(randomData):
     fake = Faker()
     user_email = fake.company_email()
     user_name = fake.name()
-    user_password = fake.password()
+    password_length = random.randint(8, 28)
+    user_password = fake.password(length=password_length)
     save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/users/register' \
     -H 'accept: application/json' \
     -H 'Content-Type: application/x-www-form-urlencoded' \
@@ -746,7 +749,9 @@ def delete_json_file(randomData):
     print(f"Deleted JSON file: {json_file_path}")
 
 def start_video_recording(test_name):
-    video_filename = f"/tmp/{test_name}_recording.mp4"
+    os.makedirs('reports/videos', exist_ok=True)
+    
+    video_filename = f"reports/videos/{test_name}_recording.mp4"  
     ffmpeg_command = [
         "ffmpeg", "-y", "-f", "x11grab", "-video_size", "1920x1080", "-i", ":99", 
         "-r", "25", "-pix_fmt", "yuv420p", video_filename

@@ -36,30 +36,37 @@ jobs:
       - name: Set up graphical environment
         run: |
           export DISPLAY=:99
-          Xvfb :99 -screen 0 1920x1080x24 &  # Inicializa Xvfb com a tela virtual
+          Xvfb :99 -screen 0 1920x1080x24 &  # Start Xvfb with the virtual screen
           sleep 3
 
           touch ~/.Xauthority
           xauth generate :99 . trusted
           export XAUTHORITY=$HOME/.Xauthority
 
-          # Use fluxbox to manage window
-          fluxbox -display :99 &  # Inicializa o fluxbox com display específico
+          # Use fluxbox to manage the window
+          fluxbox -display :99 &  # Start fluxbox with specific display
           sleep 3  # Wait for fluxbox to load
 
       - name: Create reports directory
         run: mkdir -p reports
 
-      - name: Run Pytest (executa o teste que abrirá o terminal)
+      - name: Run Pytest (executes the test that opens the terminal)
         run: |
           export DISPLAY=:99
-          pytest ./tests -v --html=./reports/report.html --self-contained-html
+          pytest ./tests -v --html=./reports/report.html --self-contained-html || exit 1
         shell: /usr/bin/bash -e {0}
-        continue-on-error: true  # Adicionado para garantir a continuidade do fluxo
+        continue-on-error: true  # Added to ensure the flow continues even if tests fail
 
       - name: Upload test report
-        if: always()  # Garante que o upload será feito independentemente do sucesso do teste
+        if: always()  # Ensures the upload happens regardless of test success
         uses: actions/upload-artifact@v4
         with:
           name: test-report
           path: reports/report.html
+
+      - name: Upload failed test videos
+        if: failure()  # Only uploads if any test failed
+        uses: actions/upload-artifact@v4
+        with:
+          name: failed-videos
+          path: reports/videos/*.mp4  # Uploads all videos recorded in the reports/videos/ folder
