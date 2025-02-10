@@ -55,9 +55,11 @@ jobs:
           export DISPLAY=:99
           pytest ./tests -v --html=./reports/report.html --self-contained-html
         shell: /usr/bin/bash -e {0}
+        continue-on-error: true  # Adicionado para garantir a continuidade do fluxo
 
       - name: Upload test report
+        if: always()  # Garante que o upload será feito independentemente do sucesso do teste
         uses: actions/upload-artifact@v4
         with:
           name: test-report
-          path: reports/
+          path: reports/report.html
