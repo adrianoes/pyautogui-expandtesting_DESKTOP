@@ -19,9 +19,9 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y xvfb x11-utils xauth ffmpeg imagemagick python3-tk fluxbox xterm
+          sudo apt install -y xvfb x11-utils xauth ffmpeg imagemagick python3-tk fluxbox xterm gnome-screenshot
           python3 -m pip install --upgrade pip
-          python3 -m pip install pytest pyautogui Faker pytest-html pyscreeze pillow
+          python3 -m pip install pytest pyautogui Faker pytest-html pyscreeze Pillow 
 
       - name: List versions of apt dependencies
         run: |
