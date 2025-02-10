@@ -865,12 +865,18 @@ def start_video_recording(test_name):
     os.makedirs('reports/videos', exist_ok=True)
     
     video_filename = f"reports/videos/{test_name}_recording.mp4"  
+    
+    # FFmpeg command 
     ffmpeg_command = [
-        "ffmpeg", "-y", "-f", "x11grab", "-video_size", "1920x1080", "-i", ":99", 
-        "-r", "25", "-pix_fmt", "yuv420p", video_filename
+        "ffmpeg", "-y", "-probesize", "100M", "-f", "x11grab", "-video_size", "1920x1080", "-framerate", "30", "-i", ":99", 
+        "-pix_fmt", "yuv420p", video_filename
     ]
+    
+    # starts FFmpeg process
     ffmpeg_process = subprocess.Popen(ffmpeg_command)
+    
     print(f"Starting video recording for the test '{test_name}'...")
+    
     return ffmpeg_process, video_filename
 
 def stop_video_recording(ffmpeg_process, video_filename, passed):

@@ -6,6 +6,19 @@ import json
 import subprocess
 import random
 
+def start_video_recording(test_name):
+    os.makedirs('reports/videos', exist_ok=True)
+    video_filename = f"reports/videos/{test_name}_recording.mp4"  
+    
+    ffmpeg_command = [
+        "ffmpeg", "-y", "-probesize", "100M", "-f", "x11grab", "-video_size", "1920x1080", "-framerate", "30", "-i", ":99", 
+        "-pix_fmt", "yuv420p", video_filename
+    ]
+    
+    ffmpeg_process = subprocess.Popen(ffmpeg_command)
+    print(f"Starting video recording for the test '{test_name}'...")
+    return ffmpeg_process, video_filename
+
 def test_create_user_curl():
     # Start video recording for this specific test
     ffmpeg_process, video_filename = start_video_recording("test_create_user_curl")
@@ -30,9 +43,16 @@ def test_create_user_curl():
     -H 'accept: application/json' \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'name={user_name}&email={user_email}&password={user_password}' > /tmp/last"""    
+
     pyautogui.write(save_output_script, interval=0.1)
+    
+    screenshot_filename = f"reports/screenshots/test_create_user_curl_before_enter.png"
+    pyautogui.screenshot(screenshot_filename)
+    print(f"Screenshot saved at {screenshot_filename}")
+    
     pyautogui.press("enter")
-    time.sleep(10)
+    
+    time.sleep(10)  
 
     # Read the response from the file
     with open("/tmp/last", "r") as file:
@@ -586,9 +606,16 @@ def create_user(randomData):
     -H 'accept: application/json' \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'name={user_name}&email={user_email}&password={user_password}' > /tmp/last"""    
+
     pyautogui.write(save_output_script, interval=0.1)
+    
+    screenshot_filename = f"reports/screenshots/test_create_user_curl_before_enter.png"
+    pyautogui.screenshot(screenshot_filename)
+    print(f"Screenshot saved at {screenshot_filename}")
+    
     pyautogui.press("enter")
-    time.sleep(10)
+    
+    time.sleep(10)  
 
     # Read the response from the file
     with open("/tmp/last", "r") as file:
@@ -752,12 +779,18 @@ def start_video_recording(test_name):
     os.makedirs('reports/videos', exist_ok=True)
     
     video_filename = f"reports/videos/{test_name}_recording.mp4"  
+    
+    # FFmpeg command 
     ffmpeg_command = [
-        "ffmpeg", "-y", "-f", "x11grab", "-video_size", "1920x1080", "-i", ":99", 
-        "-r", "25", "-pix_fmt", "yuv420p", video_filename
+        "ffmpeg", "-y", "-probesize", "100M", "-f", "x11grab", "-video_size", "1920x1080", "-framerate", "30", "-i", ":99", 
+        "-pix_fmt", "yuv420p", video_filename
     ]
+    
+    # starts FFmpeg process
     ffmpeg_process = subprocess.Popen(ffmpeg_command)
+    
     print(f"Starting video recording for the test '{test_name}'...")
+    
     return ffmpeg_process, video_filename
 
 def stop_video_recording(ffmpeg_process, video_filename, passed):
