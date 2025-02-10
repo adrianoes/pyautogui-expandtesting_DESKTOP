@@ -704,6 +704,8 @@ def create_user(randomData):
     -d 'name={user_name}&email={user_email}&password={user_password}' > /tmp/last"""    
 
     pyautogui.write(save_output_script, interval=0.1)
+    screenshot_dir = "reports/screenshots"
+    os.makedirs(screenshot_dir, exist_ok=True)
     
     screenshot_filename = f"reports/screenshots/test_create_user_curl_before_enter.png"
     pyautogui.screenshot(screenshot_filename)
