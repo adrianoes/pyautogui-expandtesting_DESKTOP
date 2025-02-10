@@ -64,14 +64,13 @@ jobs:
           name: test-report
           path: reports/report.html
 
+      - name: Ensure screenshots folder exists
+        if: failure()  # Only runs if any test failed
+        run: |
+          mkdir -p reports/screenshots
+
       - name: Upload screenshots if test failed
         if: failure()  # Only uploads if any test failed
-        run: |
-          # Make sure the screenshots folder exists and upload the screenshots
-          mkdir -p reports/screenshots
-          for img in reports/screenshots/*.png; do
-            echo "Uploading $img"
-          done
         uses: actions/upload-artifact@v4
         with:
           name: failed-screenshots
