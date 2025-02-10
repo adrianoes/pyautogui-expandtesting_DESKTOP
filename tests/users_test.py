@@ -5,6 +5,7 @@ import os
 import json
 import subprocess
 import random
+import pyscreeze
 
 def start_video_recording(test_name):
     os.makedirs('reports/videos', exist_ok=True)

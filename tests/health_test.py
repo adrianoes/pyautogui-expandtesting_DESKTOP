@@ -3,6 +3,7 @@ import pyautogui
 import os
 import json
 import subprocess
+import pyscreeze
 
 def test_health_curl():
     # Start video recording for this specific test

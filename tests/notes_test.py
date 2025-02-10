@@ -4,6 +4,8 @@ import pyautogui
 import os
 import json
 import subprocess
+import random
+import pyscreeze
 
 def test_create_note_curl():
     # Start video recording for this specific test
@@ -694,14 +696,22 @@ def create_user(randomData):
     fake = Faker()
     user_email = fake.company_email()
     user_name = fake.name()
-    user_password = fake.password()
+    password_length = random.randint(8, 28)
+    user_password = fake.password(length=password_length)
     save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/users/register' \
     -H 'accept: application/json' \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'name={user_name}&email={user_email}&password={user_password}' > /tmp/last"""    
+
     pyautogui.write(save_output_script, interval=0.1)
+    
+    screenshot_filename = f"reports/screenshots/test_create_user_curl_before_enter.png"
+    pyautogui.screenshot(screenshot_filename)
+    print(f"Screenshot saved at {screenshot_filename}")
+    
     pyautogui.press("enter")
-    time.sleep(10)
+    
+    time.sleep(10)  
 
     # Read the response from the file
     with open("/tmp/last", "r") as file:
