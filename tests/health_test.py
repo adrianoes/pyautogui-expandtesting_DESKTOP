@@ -59,7 +59,6 @@ def test_health_curl():
         assert message == "Notes API is Running", "Error: incorrect message"
 
         print("✅ API health check passed successfully!")
-        passed = True  # Test passed
 
     except AssertionError as e:
         print(f"❌ {e}")

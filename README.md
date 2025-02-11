@@ -64,6 +64,11 @@ and keep all the other preferenced options as they are.
 - [xterm](https://www.root.cz/man/1/xterm/)
 - [Linux Commands Cheat Sheet](https://www.geeksforgeeks.org/linux-commands-cheat-sheet/)
 - [Reusing output from last command in Bash [duplicate]](https://stackoverflow.com/a/48398357)
+- [os](https://docs.python.org/3/library/os.html)
+- [json](https://docs.python.org/3/library/json.html)
+- [subprocess](https://docs.python.org/3/library/subprocess.html)
+- [random](https://docs.python.org/3/library/random.html)
+- [PyScreeze](https://pypi.org/project/PyScreeze/)
 
 # Tips:
 
