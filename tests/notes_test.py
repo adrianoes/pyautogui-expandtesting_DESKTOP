@@ -40,12 +40,12 @@ def test_create_note_curl():
     note_title = fake.sentence(2)
 
     # Send cURL request to create the note
-    create_note_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/notes' \
+    save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/notes' \
     -H 'accept: application/json' \
     -H 'x-auth-token: {user_token}' \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'title={note_title}&description={note_description}&category={note_category}' > /tmp/note_response"""
-    pyautogui.write(create_note_script, interval=0.1)
+    pyautogui.write(save_output_script, interval=0.1)
     pyautogui.press("enter")
     time.sleep(10)
 
@@ -82,8 +82,9 @@ def test_create_note_curl():
     assert response_user_id == user_id, "Error: user_id does not match"
     print("✅ Note creation test passed successfully!")
 
-    # Update the same JSON file with note data
-    data.update({
+    # Save user credentials in a JSON file
+    os.makedirs('./resources', exist_ok=True)
+    user_data = {
         'user_id': user_id,
         'user_token': user_token,
         'note_category': note_category,
@@ -93,15 +94,15 @@ def test_create_note_curl():
         'note_id': note_id,
         'note_created_at': note_created_at,
         'note_updated_at': note_updated_at
-    })
-
+    }
+    json_file_path = f"./resources/file-{randomData}.json"
     with open(json_file_path, 'w') as json_file:
-        json.dump(data, json_file, indent=4)
+        json.dump(user_data, json_file, indent=4)
 
-    # Display the saved content for verification
-    print(f"Updated JSON file with note data: {json_file_path}")
+    # Print the content of the saved JSON file for double-checking
+    print(f"Saved user data in JSON file: {json_file_path}")
     with open(json_file_path, 'r') as json_file:
-        print(json.dumps(json.load(json_file), indent=4))
+        print(json.dumps(json.load(json_file), indent=4))  # Print the JSON content in a readable format
 
     # Delete user after the test
     delete_user(randomData)
@@ -156,12 +157,12 @@ def test_get_notes_curl():
     note_title2 = fake.sentence(2)
 
     # Send cURL request to create the note
-    create_note_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/notes' \
+    save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/notes' \
     -H 'accept: application/json' \
     -H 'x-auth-token: {user_token}' \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'title={note_title2}&description={note_description2}&category={note_category2}' > /tmp/note_response"""
-    pyautogui.write(create_note_script, interval=0.1)
+    pyautogui.write(save_output_script, interval=0.1)
     pyautogui.press("enter")
     time.sleep(10)
 
@@ -187,10 +188,10 @@ def test_get_notes_curl():
     note_completed2 = data.get("completed")
 
     # Send cURL request to retrieve all notes
-    retrieve_notes_script = f"""curl -X 'GET' 'https://practice.expandtesting.com/notes/api/notes' \
+    save_output_script = f"""curl -X 'GET' 'https://practice.expandtesting.com/notes/api/notes' \
     -H 'accept: application/json' \
     -H 'x-auth-token: {user_token}' > /tmp/notes_response"""
-    pyautogui.write(retrieve_notes_script, interval=0.1)
+    pyautogui.write(save_output_script, interval=0.1)
     pyautogui.press("enter")
     time.sleep(10)
 
@@ -296,10 +297,10 @@ def test_get_note_by_id_curl():
         note_id = data['note_id']  # Retrieve the created note ID
 
     # cURL command to fetch the note by its ID
-    get_note_script = f"""curl -X 'GET' 'https://practice.expandtesting.com/notes/api/notes/{note_id}' \
+    save_output_script = f"""curl -X 'GET' 'https://practice.expandtesting.com/notes/api/notes/{note_id}' \
     -H 'accept: application/json' \
     -H 'x-auth-token: {user_token}' > /tmp/get_note_response"""
-    pyautogui.write(get_note_script, interval=0.1)
+    pyautogui.write(save_output_script, interval=0.1)
     pyautogui.press("enter")
     time.sleep(10)
 
@@ -394,12 +395,12 @@ def test_update_note_curl():
     updated_note_title = fake.sentence(2)
 
     # cURL command to update the note by its ID
-    update_note_script = f"""curl -X 'PUT' 'https://practice.expandtesting.com/notes/api/notes/{note_id}' \
+    save_output_script = f"""curl -X 'PUT' 'https://practice.expandtesting.com/notes/api/notes/{note_id}' \
     -H 'accept: application/json' \
     -H 'x-auth-token: {user_token}' \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'title={updated_note_title}&description={updated_note_description}&completed={updated_note_completed}&category={updated_note_category}' > /tmp/update_note_response"""
-    pyautogui.write(update_note_script, interval=0.1)
+    pyautogui.write(save_output_script, interval=0.1)
     pyautogui.press("enter")
     time.sleep(10)
 
@@ -490,12 +491,12 @@ def test_update_note_status_curl():
         note_updated_at = data['note_updated_at']  # Retrieve updated_at for comparison
 
     # cURL command to update the note's completion status
-    patch_note_script = f"""curl -X 'PATCH' 'https://practice.expandtesting.com/notes/api/notes/{note_id}' \
+    save_output_script = f"""curl -X 'PATCH' 'https://practice.expandtesting.com/notes/api/notes/{note_id}' \
     -H 'accept: application/json' \
     -H 'x-auth-token: {user_token}' \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'completed=true' > /tmp/patch_note_response"""
-    pyautogui.write(patch_note_script, interval=0.1)
+    pyautogui.write(save_output_script, interval=0.1)
     pyautogui.press("enter")
     time.sleep(10)
 
@@ -580,10 +581,10 @@ def test_delete_note_curl():
         note_id = data['note_id']  # Retrieve the created note ID
 
     # cURL command to delete the note by its ID
-    delete_note_script = f"""curl -X 'DELETE' 'https://practice.expandtesting.com/notes/api/notes/{note_id}' \
+    save_output_script = f"""curl -X 'DELETE' 'https://practice.expandtesting.com/notes/api/notes/{note_id}' \
     -H 'accept: application/json' \
     -H 'x-auth-token: {user_token}' > /tmp/delete_note_response"""
-    pyautogui.write(delete_note_script, interval=0.1)
+    pyautogui.write(save_output_script, interval=0.1)
     pyautogui.press("enter")
     time.sleep(10)
 
@@ -630,6 +631,8 @@ def create_user(randomData):
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'name={user_name}&email={user_email}&password={user_password}' > /tmp/last"""    
 
+    print(user_password)
+    print(save_output_script)
     pyautogui.write(save_output_script, interval=0.1)
     time.sleep(2)     
     pyautogui.press("enter")    
@@ -750,10 +753,10 @@ def delete_user(randomData):
     user_token = data['user_token']
 
     # Send delete account request
-    delete_account_script = f"""curl -X 'DELETE' 'https://practice.expandtesting.com/notes/api/users/delete-account' \
+    save_output_script = f"""curl -X 'DELETE' 'https://practice.expandtesting.com/notes/api/users/delete-account' \
     -H 'accept: application/json' \
     -H 'x-auth-token: {user_token}' > /tmp/last"""
-    pyautogui.write(delete_account_script, interval=0.1)
+    pyautogui.write(save_output_script, interval=0.1)
     pyautogui.press("enter")
     time.sleep(10)
 
@@ -812,12 +815,12 @@ def create_note(randomData):
     note_title = fake.sentence(2)
 
     # Send cURL request to create the note
-    create_note_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/notes' \
+    save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/notes' \
     -H 'accept: application/json' \
     -H 'x-auth-token: {user_token}' \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'title={note_title}&description={note_description}&category={note_category}' > /tmp/note_response"""
-    pyautogui.write(create_note_script, interval=0.1)
+    pyautogui.write(save_output_script, interval=0.1)
     pyautogui.press("enter")
     time.sleep(10)
 
@@ -854,8 +857,9 @@ def create_note(randomData):
     assert response_user_id == user_id, "Error: user_id does not match"
     print("✅ Note creation test passed successfully!")
 
-    # Update the same JSON file with note data
-    data.update({
+    # Save user credentials in a JSON file
+    os.makedirs('./resources', exist_ok=True)
+    user_data = {
         'user_id': user_id,
         'user_token': user_token,
         'note_category': note_category,
@@ -865,12 +869,12 @@ def create_note(randomData):
         'note_id': note_id,
         'note_created_at': note_created_at,
         'note_updated_at': note_updated_at
-    })
-
+    }
+    json_file_path = f"./resources/file-{randomData}.json"
     with open(json_file_path, 'w') as json_file:
-        json.dump(data, json_file, indent=4)
+        json.dump(user_data, json_file, indent=4)
 
-    # Display the saved content for verification
-    print(f"Updated JSON file with note data: {json_file_path}")
+    # Print the content of the saved JSON file for double-checking
+    print(f"Saved user data in JSON file: {json_file_path}")
     with open(json_file_path, 'r') as json_file:
-        print(json.dumps(json.load(json_file), indent=4))
+        print(json.dumps(json.load(json_file), indent=4))  # Print the JSON content in a readable format
