@@ -7,19 +7,6 @@ import subprocess
 import random
 import pyscreeze
 
-def start_video_recording(test_name):
-    os.makedirs('reports/videos', exist_ok=True)
-    video_filename = f"reports/videos/{test_name}_recording.mp4"  
-    
-    ffmpeg_command = [
-        "ffmpeg", "-y", "-probesize", "100M", "-f", "x11grab", "-video_size", "1920x1080", "-framerate", "30", "-i", ":99", 
-        "-pix_fmt", "yuv420p", video_filename
-    ]
-    
-    ffmpeg_process = subprocess.Popen(ffmpeg_command)
-    print(f"Starting video recording for the test '{test_name}'...")
-    return ffmpeg_process, video_filename
-
 def test_create_user_curl():
     # Start video recording for this specific test
     ffmpeg_process, video_filename = start_video_recording("test_create_user_curl")

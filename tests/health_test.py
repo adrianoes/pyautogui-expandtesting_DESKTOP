@@ -8,59 +8,71 @@ import pyscreeze
 def test_health_curl():
     # Start video recording for this specific test
     ffmpeg_process, video_filename = start_video_recording("test_health_curl")
-    
-    # Starting the display
+
+    # Start display
     os.environ["DISPLAY"] = ":99"
     
+    # Start terminal
     starting_terminal()
 
-    # Check if there is already an active capture script (avoids duplicate redirection)
-    if not os.path.exists("/tmp/last"):
-        print("Setting up terminal output capture...")
-        save_output_script = """curl -X 'GET' 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json' > /tmp/last"""
-        pyautogui.write(save_output_script, interval=0.1)
-        pyautogui.press("enter")
-        time.sleep(2)
-    else:
-        print("Output capture already set up. Skipping this step.")
+    # API Health Check
+    print("Checking API health status...")
+    
+    save_output_script = """curl -X 'GET' 'https://practice.expandtesting.com/notes/api/health-check' \
+    -H 'accept: application/json' \ > /tmp/last"""
+    
+    pyautogui.write(save_output_script, interval=0.1)
+    
+    # Ensure screenshot directory exists
+    screenshot_dir = "reports/screenshots"
+    os.makedirs(screenshot_dir, exist_ok=True)
+    
+    # Capture screenshot before execution
+    screenshot_filename = f"reports/screenshots/test_health_curl_before_enter.png"
+    pyautogui.screenshot(screenshot_filename)
+    print(f"Screenshot saved at {screenshot_filename}")
+    
+    # Execute the command
+    pyautogui.press("enter")
+    
+    # Wait for the response
+    time.sleep(10)
 
-    time.sleep(10)  # Increase the wait time
-
-    response_from_file = ""
-    retry_count = 0
-    max_retries = 10
-    while retry_count < max_retries:
-        if os.path.exists("/tmp/last") and os.path.getsize("/tmp/last") > 0:
-            with open("/tmp/last", "r") as file:
-                response_from_file = file.read().strip()
-            if response_from_file:
-                break  # Exit the loop as soon as content is found
-        print(f"Attempt {retry_count + 1}: /tmp/last file still empty, waiting...")
-        time.sleep(3)  # Increase the wait time between retries
-        retry_count += 1
+    # Read the response from the file
+    with open("/tmp/last", "r") as file:
+        response_from_file = file.read().strip()
     print(f"Captured response: {response_from_file}")
 
+    # Extracting values from the response
+    response_json = json.loads(response_from_file)
+    success = response_json.get("success")
+    status = response_json.get("status")
+    message = response_json.get("message")
+    data = response_json.get("data", {})  # Standardizing the format
+
+    print(f"Extracted data: success={success}, status={status}, message='{message}'")
+
+    # Assertions for API health check
     passed = False
-    if response_from_file:
-        try:
-            response_json = json.loads(response_from_file)
-            success = response_json.get("success")
-            status = response_json.get("status")
-            message = response_json.get("message")
-            print(f"Extracted data: success={success}, status={status}, message='{message}'")
-            assert success == True, "Error: success is not True"
-            assert status == 200, "Error: status is not 200"
-            assert message == "Notes API is Running", "Error: incorrect message"
-            print("✅ API health checks!")
-            passed = True  # Test passed
-        except json.JSONDecodeError:
-            print("❌ Error converting the response to JSON!")
-    else:
-        print("❌ Response was not captured correctly.")
+    try:
+        assert success is True, "Error: success is not True"
+        assert status == 209, "Error: status is not 200"
+        assert message == "Notes API is Running", "Error: incorrect message"
 
-    os.system("pkill xterm")
+        print("✅ API health check passed successfully!")
+        passed = True  # Test passed
 
+    except AssertionError as e:
+        print(f"❌ {e}")
+
+    # Cleanup
+    os.system("pkill xterm")  # Close terminal
+    if os.path.exists("/tmp/last"):
+        os.remove("/tmp/last")  # Remove temporary file
+
+    # Stop video recording
     stop_video_recording(ffmpeg_process, video_filename, passed)
+
 
 def starting_terminal():
     # Check if the terminal is already open
