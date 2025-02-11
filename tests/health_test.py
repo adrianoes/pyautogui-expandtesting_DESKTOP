@@ -2,8 +2,6 @@ import time
 import pyautogui
 import os
 import json
-import subprocess
-import pyscreeze
 
 def test_health_curl():
 
