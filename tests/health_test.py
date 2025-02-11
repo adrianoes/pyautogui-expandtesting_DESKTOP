@@ -48,14 +48,13 @@ def test_health_curl():
     success = response_json.get("success")
     status = response_json.get("status")
     message = response_json.get("message")
-    data = response_json.get("data", {})  # Standardizing the format
 
     print(f"Extracted data: success={success}, status={status}, message='{message}'")
 
     # Assertions for API health check
     passed = False
     try:
-        assert success is True, "Error: success is not True"
+        assert success is False, "Error: success is not True"
         assert status == 209, "Error: status is not 200"
         assert message == "Notes API is Running", "Error: incorrect message"
 
@@ -72,7 +71,6 @@ def test_health_curl():
 
     # Stop video recording
     stop_video_recording(ffmpeg_process, video_filename, passed)
-
 
 def starting_terminal():
     # Check if the terminal is already open

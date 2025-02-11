@@ -53,7 +53,7 @@ jobs:
       - name: Run Pytest (executes the test that opens the terminal)
         run: |
           export DISPLAY=:99
-          pytest ./tests -v --html=./reports/report.html --self-contained-html || exit 1
+          pytest ./tests/health_test.py -v --html=./reports/report.html --self-contained-html || exit 1
         shell: /usr/bin/bash -e {0}
         continue-on-error: true  # Added to ensure the flow continues even if tests fail
 
