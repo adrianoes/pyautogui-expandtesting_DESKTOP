@@ -38,15 +38,10 @@ def test_health_curl():
 
     print(f"Extracted data: success={success}, status={status}, message='{message}'")
 
-    # Assertions for API health check
-    
-    try:
-        assert success is False, "Error: success is not True"
-        assert status == 209, "Error: status is not 200"
-        assert message == "Notes API is Running", "Error: incorrect message"
-        print("✅ API health check passed successfully!")
-    except AssertionError as e:
-        print(f"❌ {e}")
+    assert success is False, "Error: success is not True"
+    assert status == 209, "Error: status is not 200"
+    assert message == "Notes API is Running", "Error: incorrect message"
+    print("✅ API health check passed successfully!")
 
     # Cleanup
     os.system("pkill xterm")  # Close terminal
