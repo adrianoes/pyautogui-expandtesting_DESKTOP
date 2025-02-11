@@ -53,7 +53,7 @@ jobs:
       - name: Run Pytest (executes the test that opens the terminal)
         run: |
           export DISPLAY=:99
-          pytest ./tests/health_test.py -v --html=./reports/report.html --self-contained-html 
+          pytest ./tests/ -v --html=./reports/report.html --self-contained-html 
         shell: /usr/bin/bash -e {0}
 
       - name: Upload test report
