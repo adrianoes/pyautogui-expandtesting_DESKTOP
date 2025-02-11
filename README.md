@@ -17,8 +17,6 @@ Desktop testing in [expandtesting](https://practice.expandtesting.com/notes/api/
 | xvfb                            | 2:21.1.12-1ubuntu1.1        | Remote dependency only.   |
 | x11-utils                       | 7.7+6build2                 | Remote dependency only.   |
 | xauth                           | 1:1.1.2-1build1             | Remote dependency only.   |
-| ffmpeg                          | 7:6.1.1-3ubuntu5            |                           |
-| ImageMagick                     | 8:6.9.12.98+dfsg1-5.2build2 | Remote dependency only.   |
 | fluxbox                         | 1.3.7-1build2               | Remote dependency only.   |
 | python3-tk                      | 3.12.3-0ubuntu1             | Remote dependency only.   |
 | xterm                           | 390-1ubuntu3                | Remote dependency only.   |
@@ -56,8 +54,6 @@ and keep all the other preferenced options as they are.
 - [How to Install Xvfb on Ubuntu 20.04](https://neuronvm.com/docs/install-xvfb-on-ubuntu-20-04/)
 - [x11-utils](https://www.x.org/wiki/Releases/)
 - [xauth](https://linux.die.net/man/1/xauth)
-- [ffmpeg](https://ffmpeg.org/documentation.html)
-- [ImageMagick](https://imagemagick.org/script/index.php)
 - [python3-tk](https://wiki.python.org/moin/TkInter)
 - [fluxbox](https://fluxbox.org/)
 - [Fluxbox](https://wiki.archlinux.org/title/Fluxbox)
@@ -66,9 +62,7 @@ and keep all the other preferenced options as they are.
 - [Reusing output from last command in Bash [duplicate]](https://stackoverflow.com/a/48398357)
 - [os](https://docs.python.org/3/library/os.html)
 - [json](https://docs.python.org/3/library/json.html)
-- [subprocess](https://docs.python.org/3/library/subprocess.html)
 - [random](https://docs.python.org/3/library/random.html)
-- [PyScreeze](https://pypi.org/project/PyScreeze/)
 
 # Tips:
 

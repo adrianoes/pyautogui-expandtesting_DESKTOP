@@ -3,13 +3,9 @@ from faker import Faker
 import pyautogui
 import os
 import json
-import subprocess
 import random
-import pyscreeze
 
 def test_create_user_curl():
-    # Start video recording for this specific test
-    ffmpeg_process, video_filename = start_video_recording("test_create_user_curl")
 
     # Creating random number so we can use custom commands
     randomData = Faker().hexify(text='^^^^^^^^^^^^')
@@ -33,14 +29,8 @@ def test_create_user_curl():
     -d 'name={user_name}&email={user_email}&password={user_password}' > /tmp/last"""    
 
     pyautogui.write(save_output_script, interval=0.1)
-    screenshot_dir = "reports/screenshots"
-    os.makedirs(screenshot_dir, exist_ok=True)
-    screenshot_filename = f"reports/screenshots/test_create_user_curl_before_enter.png"
-    pyautogui.screenshot(screenshot_filename)
-    print(f"Screenshot saved at {screenshot_filename}")
-    
-    pyautogui.press("enter")
-    
+    time.sleep(2)     
+    pyautogui.press("enter")    
     time.sleep(10)  
 
     # Read the response from the file
@@ -59,17 +49,12 @@ def test_create_user_curl():
     response_email = data.get("email")
 
     # Assertions for user registration
-    passed = False
-    try:
-        assert success is True, "Error: success is not True"
-        assert status == 201, "Error: status is not 201"
-        assert message == "User account created successfully", "Error: incorrect message"
-        assert response_name == user_name, "Error: name does not match"
-        assert response_email == user_email, "Error: email does not match"
-        print("✅ User registration test passed successfully!")
-        passed = True  # Test passed
-    except AssertionError as e:
-        print(f"❌ {e}")
+    assert success is True, "Error: success is not True"
+    assert status == 201, "Error: status is not 201"
+    assert message == "User account created successfully", "Error: incorrect message"
+    assert response_name == user_name, "Error: name does not match"
+    assert response_email == user_email, "Error: email does not match"
+    print("✅ User registration test passed successfully!")
 
     # Save user credentials in a JSON file
     os.makedirs('./resources', exist_ok=True)
@@ -100,12 +85,7 @@ def test_create_user_curl():
     # Delete .json file
     delete_json_file(randomData)
 
-    # Stop video recording and decide what to do with the video
-    stop_video_recording(ffmpeg_process, video_filename, passed)
-
 def test_login_user_curl():
-    # Start video recording for this specific test
-    ffmpeg_process, video_filename = start_video_recording("test_login_user_curl")
 
     # Creating random number so we can use custom commands
     randomData = Faker().hexify(text='^^^^^^^^^^^^')
@@ -154,20 +134,15 @@ def test_login_user_curl():
     response_name = data.get("name")
     response_email = data.get("email")
     user_token = data.get("token")
-
+    
     # Assertions for login
-    passed = False
-    try:
-        assert success is True, "Error: success is not True"
-        assert status == 200, "Error: status is not 200"
-        assert message == "Login successful", "Error: incorrect message"
-        assert response_user_id == user_id, "Error: user_id does not match"
-        assert response_name == user_name, "Error: name does not match"
-        assert response_email == user_email, "Error: email does not match"
-        print("✅ Login test passed successfully!")
-        passed = True  # Test passed
-    except AssertionError as e:
-        print(f"❌ {e}")
+    assert success is True, "Error: success is not True"
+    assert status == 200, "Error: status is not 200"
+    assert message == "Login successful", "Error: incorrect message"
+    assert response_user_id == user_id, "Error: user_id does not match"
+    assert response_name == user_name, "Error: name does not match"
+    assert response_email == user_email, "Error: email does not match"
+    print("✅ Login test passed successfully!")
 
     # Save user credentials in a JSON file
     os.makedirs('./resources', exist_ok=True)
@@ -197,12 +172,7 @@ def test_login_user_curl():
     # Delete .json file
     delete_json_file(randomData)
 
-    # Stop video recording and decide what to do with the video
-    stop_video_recording(ffmpeg_process, video_filename, passed)
-
 def test_retrieve_user_curl():
-    # Start video recording for this specific test
-    ffmpeg_process, video_filename = start_video_recording("test_retrieve_user_curl")
 
     # Creating random number so we can use custom commands
     randomData = Faker().hexify(text='^^^^^^^^^^^^')
@@ -251,21 +221,15 @@ def test_retrieve_user_curl():
     data = response_json.get("data", {})
     response_id = data.get("id")
     response_name = data.get("name")
-    response_email = data.get("email")
+    response_email = data.get("email")    
 
-    # Assertions for profile data
-    passed = False
-    try:
-        assert success is True, "Error: success is not True"
-        assert status == 200, "Error: status is not 200"
-        assert message == "Profile successful", "Error: incorrect message"
-        assert response_id == user_id, "Error: user_id does not match"
-        assert response_name == user_name, "Error: name does not match"
-        assert response_email == user_email, "Error: email does not match"
-        print("✅ Profile retrieval test passed successfully!")
-        passed = True  # Test passed
-    except AssertionError as e:
-        print(f"❌ {e}")
+    assert success is True, "Error: success is not True"
+    assert status == 200, "Error: status is not 200"
+    assert message == "Profile successful", "Error: incorrect message"
+    assert response_id == user_id, "Error: user_id does not match"
+    assert response_name == user_name, "Error: name does not match"
+    assert response_email == user_email, "Error: email does not match"
+    print("✅ Profile retrieval test passed successfully!")
 
     # Delete user
     delete_user(randomData)
@@ -276,12 +240,7 @@ def test_retrieve_user_curl():
     # Delete .json file
     delete_json_file(randomData)
 
-    # Stop video recording and decide what to do with the video
-    stop_video_recording(ffmpeg_process, video_filename, passed)
-
 def test_update_user_curl():
-    # Start video recording for this specific test
-    ffmpeg_process, video_filename = start_video_recording("test_update_user_curl")
 
     # Creating random number so we can use custom commands
     randomData = Faker().hexify(text='^^^^^^^^^^^^')
@@ -340,21 +299,15 @@ def test_update_user_curl():
     response_phone = data.get("phone")
     response_company = data.get("company")
 
-    # Assertions for updated profile data
-    passed = False
-    try:
-        assert success is True, "Error: success is not True"
-        assert status == 200, "Error: status is not 200"
-        assert message == "Profile updated successful", "Error: incorrect message"
-        assert response_id == user_id, "Error: user_id does not match"
-        assert response_name == user_name, "Error: name does not match"
-        assert response_email == user_email, "Error: email does not match"
-        assert response_phone == user_phone, "Error: phone does not match"
-        assert response_company == user_company, "Error: company does not match"
-        print("✅ Profile update test passed successfully!")
-        passed = True  # Test passed
-    except AssertionError as e:
-        print(f"❌ {e}")
+    assert success is True, "Error: success is not True"
+    assert status == 200, "Error: status is not 200"
+    assert message == "Profile updated successful", "Error: incorrect message"
+    assert response_id == user_id, "Error: user_id does not match"
+    assert response_name == user_name, "Error: name does not match"
+    assert response_email == user_email, "Error: email does not match"
+    assert response_phone == user_phone, "Error: phone does not match"
+    assert response_company == user_company, "Error: company does not match"
+    print("✅ Profile update test passed successfully!")
 
     # Delete user
     delete_user(randomData)
@@ -365,12 +318,7 @@ def test_update_user_curl():
     # Delete .json file
     delete_json_file(randomData)
 
-    # Stop video recording and decide what to do with the video
-    stop_video_recording(ffmpeg_process, video_filename, passed)
-
 def test_change_user_password_curl():
-    # Start video recording for this specific test
-    ffmpeg_process, video_filename = start_video_recording("test_change_user_password_curl")
 
     # Creating random data
     randomData = Faker().hexify(text='^^^^^^^^^^^^')
@@ -421,16 +369,10 @@ def test_change_user_password_curl():
     status = response_json.get("status")
     message = response_json.get("message")
 
-    # Assertions for password update
-    passed = False
-    try:
-        assert success is True, "Error: success is not True"
-        assert status == 200, "Error: status is not 200"
-        assert message == "The password was successfully updated", "Error: incorrect message"
-        print("✅ Password update test passed successfully!")
-        passed = True  # Test passed
-    except AssertionError as e:
-        print(f"❌ {e}")
+    assert success is True, "Error: success is not True"
+    assert status == 200, "Error: status is not 200"
+    assert message == "The password was successfully updated", "Error: incorrect message"
+    print("✅ Password update test passed successfully!")
 
     # Delete user
     delete_user(randomData)
@@ -441,12 +383,7 @@ def test_change_user_password_curl():
     # Delete .json file
     delete_json_file(randomData)
 
-    # Stop video recording and decide what to do with the video
-    stop_video_recording(ffmpeg_process, video_filename, passed)
-
 def test_logout_user_curl():
-    # Start video recording for this specific test
-    ffmpeg_process, video_filename = start_video_recording("test_logout_user_curl")
 
     # Creating random number so we can use custom commands
     randomData = Faker().hexify(text='^^^^^^^^^^^^')
@@ -490,16 +427,10 @@ def test_logout_user_curl():
     status = response_json.get("status")
     message = response_json.get("message")
 
-    # Assertions for logout response
-    passed = False
-    try:
-        assert success is True, "Error: success is not True"
-        assert status == 200, "Error: status is not 200"
-        assert message == "User has been successfully logged out", "Error: incorrect message"
-        print("✅ Logout test passed successfully!")
-        passed = True  # Test passed
-    except AssertionError as e:
-        print(f"❌ {e}")
+    assert success is True, "Error: success is not True"
+    assert status == 200, "Error: status is not 200"
+    assert message == "User has been successfully logged out", "Error: incorrect message"
+    print("✅ Logout test passed successfully!")
 
     # Login user again so we can grab new token and delete user
     login_user(randomData)
@@ -513,12 +444,7 @@ def test_logout_user_curl():
     # Delete .json file
     delete_json_file(randomData)
 
-    # Stop video recording and decide what to do with the video
-    stop_video_recording(ffmpeg_process, video_filename, passed)
-
 def test_delete_user_curl():
-    # Start video recording for this specific test
-    ffmpeg_process, video_filename = start_video_recording("test_delete_user_curl")
 
     # Creating random number so we can use custom commands
     randomData = Faker().hexify(text='^^^^^^^^^^^^')
@@ -564,24 +490,16 @@ def test_delete_user_curl():
     message = response_json.get("message")
 
     # Assertions for account deletion
-    passed = False
-    try:
-        assert success is True, "Error: success is not True"
-        assert status == 200, "Error: status is not 200"
-        assert message == "Account successfully deleted", "Error: incorrect message"
-        print("✅ User account deleted successfully!")
-        passed = True  # Test passed
-    except AssertionError as e:
-        print(f"❌ {e}")
+    assert success is True, "Error: success is not True"
+    assert status == 200, "Error: status is not 200"
+    assert message == "Account successfully deleted", "Error: incorrect message"
+    print("✅ User account deleted successfully!")
 
     # Close the terminal after testing
     os.system("pkill xterm")
     
     # Delete .json file
     delete_json_file(randomData)
-
-    # Stop video recording and decide what to do with the video
-    stop_video_recording(ffmpeg_process, video_filename, passed)
 
 def create_user(randomData):
     # User registration
@@ -597,15 +515,8 @@ def create_user(randomData):
     -d 'name={user_name}&email={user_email}&password={user_password}' > /tmp/last"""    
 
     pyautogui.write(save_output_script, interval=0.1)
-    screenshot_dir = "reports/screenshots"
-    os.makedirs(screenshot_dir, exist_ok=True)
-    
-    screenshot_filename = f"reports/screenshots/test_create_user_curl_before_enter.png"
-    pyautogui.screenshot(screenshot_filename)
-    print(f"Screenshot saved at {screenshot_filename}")
-    
-    pyautogui.press("enter")
-    
+    time.sleep(2)     
+    pyautogui.press("enter")    
     time.sleep(10)  
 
     # Read the response from the file
@@ -766,28 +677,3 @@ def delete_json_file(randomData):
     os.remove(json_file_path)
     print(f"Deleted JSON file: {json_file_path}")
 
-def start_video_recording(test_name):
-    os.makedirs('reports/videos', exist_ok=True)
-    
-    video_filename = f"reports/videos/{test_name}_recording.mp4"  
-    
-    # FFmpeg command 
-    ffmpeg_command = [
-        "ffmpeg", "-y", "-probesize", "100M", "-f", "x11grab", "-video_size", "1920x1080", "-framerate", "30", "-i", ":99", 
-        "-pix_fmt", "yuv420p", video_filename
-    ]
-    
-    # starts FFmpeg process
-    ffmpeg_process = subprocess.Popen(ffmpeg_command)
-    
-    print(f"Starting video recording for the test '{test_name}'...")
-    
-    return ffmpeg_process, video_filename
-
-def stop_video_recording(ffmpeg_process, video_filename, passed):
-    ffmpeg_process.terminate()  # Stop the video recording
-    if passed:
-        print(f"Test passed, deleting the video {video_filename}")
-        os.remove(video_filename)  # Delete the video if the test passed
-    else:
-        print(f"Test failed, keeping the video {video_filename} as evidence.")

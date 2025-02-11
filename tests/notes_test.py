@@ -3,13 +3,9 @@ from faker import Faker
 import pyautogui
 import os
 import json
-import subprocess
 import random
-import pyscreeze
 
 def test_create_note_curl():
-    # Start video recording for this specific test
-    ffmpeg_process, video_filename = start_video_recording("test_create_note_curl")
 
     # Generate a random number for custom commands
     randomData = Faker().hexify(text='^^^^^^^^^^^^')
@@ -75,22 +71,16 @@ def test_create_note_curl():
     note_completed = data.get("completed")
     response_user_id = data.get("user_id")
 
-    # Assertions for validation
-    passed = False
-    try:
-        assert success is True, "Error: success is not True"
-        assert status == 200, "Error: status is not 200"
-        assert message == "Note successfully created", "Error: incorrect message"
-        assert note_id is not None, "Error: note_id is None"
-        assert response_title == note_title, "Error: title does not match"
-        assert response_description == note_description, "Error: description does not match"
-        assert response_category == note_category, "Error: category does not match"
-        assert note_completed is False, "Error: completed should be False"
-        assert response_user_id == user_id, "Error: user_id does not match"
-        print("✅ Note creation test passed successfully!")
-        passed = True  # Test passed
-    except AssertionError as e:
-        print(f"❌ {e}")
+    assert success is True, "Error: success is not True"
+    assert status == 200, "Error: status is not 200"
+    assert message == "Note successfully created", "Error: incorrect message"
+    assert note_id is not None, "Error: note_id is None"
+    assert response_title == note_title, "Error: title does not match"
+    assert response_description == note_description, "Error: description does not match"
+    assert response_category == note_category, "Error: category does not match"
+    assert note_completed is False, "Error: completed should be False"
+    assert response_user_id == user_id, "Error: user_id does not match"
+    print("✅ Note creation test passed successfully!")
 
     # Update the same JSON file with note data
     data.update({
@@ -122,12 +112,7 @@ def test_create_note_curl():
     # Delete the created JSON file
     delete_json_file(randomData)
 
-    # Stop video recording and decide what to do with the file
-    stop_video_recording(ffmpeg_process, video_filename, passed)
-
 def test_get_notes_curl():
-    # Start video recording for this specific test
-    ffmpeg_process, video_filename = start_video_recording("test_create_note_curl")
 
     # Generate a random number for custom commands
     randomData = Faker().hexify(text='^^^^^^^^^^^^')
@@ -244,37 +229,31 @@ def test_get_notes_curl():
     response_note_completed2 = data[0].get("completed")
     response_user_id2 = data[0].get("user_id")
 
-    # Assertions for validation
-    passed = False
-    try:
-        assert success is True, "Error: success is not True"
-        assert status == 200, "Error: status is not 200"
-        assert message == "Notes successfully retrieved", "Error: incorrect message"
+    assert success is True, "Error: success is not True"
+    assert status == 200, "Error: status is not 200"
+    assert message == "Notes successfully retrieved", "Error: incorrect message"
 
-        # Assertions for first created note (data[1])
-        assert response_note_id == note_id, "Error: note_id does not match"
-        assert response_note_title == note_title, "Error: title does not match"
-        assert response_note_description == note_description, "Error: description does not match"
-        assert response_note_category == note_category, "Error: category does not match"
-        assert response_note_completed == note_completed, "Error: completed does not match"
-        assert response_note_created_at == note_created_at, "Error: note_created_at does not match"
-        assert response_note_updated_at == note_updated_at, "Error: note_updated_at does not match"
-        assert response_user_id == user_id, "Error: user_id does not match"
+    # Assertions for first created note (data[1])
+    assert response_note_id == note_id, "Error: note_id does not match"
+    assert response_note_title == note_title, "Error: title does not match"
+    assert response_note_description == note_description, "Error: description does not match"
+    assert response_note_category == note_category, "Error: category does not match"
+    assert response_note_completed == note_completed, "Error: completed does not match"
+    assert response_note_created_at == note_created_at, "Error: note_created_at does not match"
+    assert response_note_updated_at == note_updated_at, "Error: note_updated_at does not match"
+    assert response_user_id == user_id, "Error: user_id does not match"
 
-        # Assertions for second created note (data[0])
-        assert response_note_id2 == note_id2, "Error: note_id2 does not match"
-        assert response_note_title2 == note_title2, "Error: title2 does not match"
-        assert response_note_description2 == note_description2, "Error: description2 does not match"
-        assert response_note_category2 == note_category2, "Error: category2 does not match"
-        assert response_note_completed2 == note_completed2, "Error: completed2 does not match"
-        assert response_note_created_at2 == note_created_at2, "Error: note_created_at2 does not match"
-        assert response_note_updated_at2 == note_updated_at2, "Error: note_updated_at2 does not match"
-        assert response_user_id2 == user_id, "Error: user_id2 does not match"
+    # Assertions for second created note (data[0])
+    assert response_note_id2 == note_id2, "Error: note_id2 does not match"
+    assert response_note_title2 == note_title2, "Error: title2 does not match"
+    assert response_note_description2 == note_description2, "Error: description2 does not match"
+    assert response_note_category2 == note_category2, "Error: category2 does not match"
+    assert response_note_completed2 == note_completed2, "Error: completed2 does not match"
+    assert response_note_created_at2 == note_created_at2, "Error: note_created_at2 does not match"
+    assert response_note_updated_at2 == note_updated_at2, "Error: note_updated_at2 does not match"
+    assert response_user_id2 == user_id, "Error: user_id2 does not match"
 
-        print("✅ Notes retrieval test passed successfully!")
-        passed = True  # Test passed
-    except AssertionError as e:
-        print(f"❌ {e}")
+    print("✅ Notes retrieval test passed successfully!")
 
     # Delete user after the test
     delete_user(randomData)
@@ -285,12 +264,7 @@ def test_get_notes_curl():
     # Delete the created JSON file
     delete_json_file(randomData)
 
-    # Stop video recording and decide what to do with the file
-    stop_video_recording(ffmpeg_process, video_filename, passed)
-
 def test_get_note_by_id_curl():
-    # Start video recording for this specific test
-    ffmpeg_process, video_filename = start_video_recording("test_get_note_curl")
 
     # Generate a random identifier
     randomData = Faker().hexify(text='^^^^^^^^^^^^')
@@ -352,25 +326,18 @@ def test_get_note_by_id_curl():
     note_updated_at = note_data.get("updated_at")
     response_user_id = note_data.get("user_id")
 
-    # Assertions to validate the retrieved data
-    passed = False
-    try:
-        assert success is True, "Error: success is not True"
-        assert status == 200, "Error: status is not 200"
-        assert message == "Note successfully retrieved", "Error: incorrect message"
-        assert response_note_id == note_id, "Error: note_id does not match"
-        assert response_title == data['note_title'], "Error: title does not match"
-        assert response_description == data['note_description'], "Error: description does not match"
-        assert response_category == data['note_category'], "Error: category does not match"
-        assert note_completed == data['note_completed'], "Error: completed status does not match"
-        assert response_user_id == user_id, "Error: user_id does not match"
-        assert note_created_at == data['note_created_at'], "Error: created_at does not match"
-        assert note_updated_at == data['note_updated_at'], "Error: updated_at does not match"
-
-        print("✅ Note retrieval test passed successfully!")
-        passed = True  # Test passed
-    except AssertionError as e:
-        print(f"❌ {e}")
+    assert success is True, "Error: success is not True"
+    assert status == 200, "Error: status is not 200"
+    assert message == "Note successfully retrieved", "Error: incorrect message"
+    assert response_note_id == note_id, "Error: note_id does not match"
+    assert response_title == data['note_title'], "Error: title does not match"
+    assert response_description == data['note_description'], "Error: description does not match"
+    assert response_category == data['note_category'], "Error: category does not match"
+    assert note_completed == data['note_completed'], "Error: completed status does not match"
+    assert response_user_id == user_id, "Error: user_id does not match"
+    assert note_created_at == data['note_created_at'], "Error: created_at does not match"
+    assert note_updated_at == data['note_updated_at'], "Error: updated_at does not match"
+    print("✅ Note retrieval test passed successfully!")
 
     # Display the saved JSON content for verification
     print(f"JSON file after note retrieval test: {json_file_path}")
@@ -386,12 +353,7 @@ def test_get_note_by_id_curl():
     # Delete the created JSON file
     delete_json_file(randomData)
 
-    # Stop video recording and decide what to do with the file
-    stop_video_recording(ffmpeg_process, video_filename, passed)
-
 def test_update_note_curl():
-    # Start video recording for this specific test
-    ffmpeg_process, video_filename = start_video_recording("test_update_note_curl")
 
     # Generate a random identifier
     randomData = Faker().hexify(text='^^^^^^^^^^^^')
@@ -464,25 +426,18 @@ def test_update_note_curl():
     response_updated_at = response_note_data.get("updated_at")
     response_user_id = response_note_data.get("user_id")
 
-    # Assertions to validate the updated data
-    passed = False
-    try:
-        assert success is True, "Error: success is not True"
-        assert status == 200, "Error: status is not 200"
-        assert message == "Note successfully Updated", "Error: incorrect message"
-        assert response_note_id == note_id, "Error: note_id does not match"
-        assert response_title == updated_note_title, "Error: title does not match"
-        assert response_description == updated_note_description, "Error: description does not match"
-        assert response_category == updated_note_category, "Error: category does not match"
-        assert response_completed == updated_note_completed, "Error: completed status does not match"
-        assert response_user_id == user_id, "Error: user_id does not match"
-        assert response_created_at == note_created_at, "Error: created_at should not be updated"
-        assert response_updated_at != note_updated_at, "Error: updated_at should be different from the previous one"
-
-        print("✅ Note update test passed successfully!")
-        passed = True  # Test passed
-    except AssertionError as e:
-        print(f"❌ {e}")
+    assert success is True, "Error: success is not True"
+    assert status == 200, "Error: status is not 200"
+    assert message == "Note successfully Updated", "Error: incorrect message"
+    assert response_note_id == note_id, "Error: note_id does not match"
+    assert response_title == updated_note_title, "Error: title does not match"
+    assert response_description == updated_note_description, "Error: description does not match"
+    assert response_category == updated_note_category, "Error: category does not match"
+    assert response_completed == updated_note_completed, "Error: completed status does not match"
+    assert response_user_id == user_id, "Error: user_id does not match"
+    assert response_created_at == note_created_at, "Error: created_at should not be updated"
+    assert response_updated_at != note_updated_at, "Error: updated_at should be different from the previous one"
+    print("✅ Note update test passed successfully!")
 
     # Display the saved JSON content for verification
     print(f"JSON file after note update test: {json_file_path}")
@@ -498,12 +453,7 @@ def test_update_note_curl():
     # Delete the created JSON file
     delete_json_file(randomData)
 
-    # Stop video recording and decide what to do with the file
-    stop_video_recording(ffmpeg_process, video_filename, passed)
-
 def test_update_note_status_curl():
-    # Start video recording for this specific test
-    ffmpeg_process, video_filename = start_video_recording("test_patch_note_curl")
 
     # Generate a random identifier
     randomData = Faker().hexify(text='^^^^^^^^^^^^')
@@ -572,25 +522,18 @@ def test_update_note_status_curl():
     response_updated_at = response_note_data.get("updated_at")
     response_user_id = response_note_data.get("user_id")
 
-    # Assertions to validate the updated data
-    passed = False
-    try:
-        assert success is True, "Error: success is not True"
-        assert status == 200, "Error: status is not 200"
-        assert message == "Note successfully Updated", "Error: incorrect message"
-        assert response_note_id == note_id, "Error: note_id does not match"
-        assert response_title == note_title, "Error: title does not match"
-        assert response_description == note_description, "Error: description does not match"
-        assert response_category == note_category, "Error: category does not match"
-        assert response_completed is True, "Error: completed status was not updated correctly"
-        assert response_user_id == user_id, "Error: user_id does not match"
-        assert response_created_at == note_created_at, "Error: created_at should not be updated"
-        assert response_updated_at != note_updated_at, "Error: updated_at should be different from the previous one (due to PATCH)"
-
-        print("✅ Note patch test passed successfully!")
-        passed = True  # Test passed
-    except AssertionError as e:
-        print(f"❌ {e}")
+    assert success is True, "Error: success is not True"
+    assert status == 200, "Error: status is not 200"
+    assert message == "Note successfully Updated", "Error: incorrect message"
+    assert response_note_id == note_id, "Error: note_id does not match"
+    assert response_title == note_title, "Error: title does not match"
+    assert response_description == note_description, "Error: description does not match"
+    assert response_category == note_category, "Error: category does not match"
+    assert response_completed is True, "Error: completed status was not updated correctly"
+    assert response_user_id == user_id, "Error: user_id does not match"
+    assert response_created_at == note_created_at, "Error: created_at should not be updated"
+    assert response_updated_at != note_updated_at, "Error: updated_at should be different from the previous one (due to PATCH)"
+    print("✅ Note patch test passed successfully!")
 
     # Display the saved JSON content for verification
     print(f"JSON file after note patch test: {json_file_path}")
@@ -606,12 +549,7 @@ def test_update_note_status_curl():
     # Delete the created JSON file
     delete_json_file(randomData)
 
-    # Stop video recording and decide what to do with the file
-    stop_video_recording(ffmpeg_process, video_filename, passed)
-
 def test_delete_note_curl():
-    # Start video recording for this specific test
-    ffmpeg_process, video_filename = start_video_recording("test_delete_note_curl")
 
     # Generate a random identifier
     randomData = Faker().hexify(text='^^^^^^^^^^^^')
@@ -661,17 +599,10 @@ def test_delete_note_curl():
     status = response_json.get("status")
     message = response_json.get("message")
 
-    # Assertions to validate the response data
-    passed = False
-    try:
-        assert success is True, "Error: success is not True"
-        assert status == 200, "Error: status is not 200"
-        assert message == "Note successfully deleted", "Error: incorrect message"
-
-        print("✅ Note deletion test passed successfully!")
-        passed = True  # Test passed
-    except AssertionError as e:
-        print(f"❌ {e}")
+    assert success is True, "Error: success is not True"
+    assert status == 200, "Error: status is not 200"
+    assert message == "Note successfully deleted", "Error: incorrect message"
+    print("✅ Note deletion test passed successfully!")
 
     # Display the saved JSON content for verification
     print(f"JSON file after note deletion test: {json_file_path}")
@@ -687,9 +618,6 @@ def test_delete_note_curl():
     # Delete the created JSON file
     delete_json_file(randomData)
 
-    # Stop video recording and decide what to do with the file
-    stop_video_recording(ffmpeg_process, video_filename, passed)
-
 def create_user(randomData):
     # User registration
     print("Registering new user...")
@@ -704,15 +632,8 @@ def create_user(randomData):
     -d 'name={user_name}&email={user_email}&password={user_password}' > /tmp/last"""    
 
     pyautogui.write(save_output_script, interval=0.1)
-    screenshot_dir = "reports/screenshots"
-    os.makedirs(screenshot_dir, exist_ok=True)
-    
-    screenshot_filename = f"reports/screenshots/test_create_user_curl_before_enter.png"
-    pyautogui.screenshot(screenshot_filename)
-    print(f"Screenshot saved at {screenshot_filename}")
-    
-    pyautogui.press("enter")
-    
+    time.sleep(2)     
+    pyautogui.press("enter")    
     time.sleep(10)  
 
     # Read the response from the file
@@ -873,32 +794,6 @@ def delete_json_file(randomData):
     os.remove(json_file_path)
     print(f"Deleted JSON file: {json_file_path}")
 
-def start_video_recording(test_name):
-    os.makedirs('reports/videos', exist_ok=True)
-    
-    video_filename = f"reports/videos/{test_name}_recording.mp4"  
-    
-    # FFmpeg command 
-    ffmpeg_command = [
-        "ffmpeg", "-y", "-probesize", "100M", "-f", "x11grab", "-video_size", "1920x1080", "-framerate", "30", "-i", ":99", 
-        "-pix_fmt", "yuv420p", video_filename
-    ]
-    
-    # starts FFmpeg process
-    ffmpeg_process = subprocess.Popen(ffmpeg_command)
-    
-    print(f"Starting video recording for the test '{test_name}'...")
-    
-    return ffmpeg_process, video_filename
-
-def stop_video_recording(ffmpeg_process, video_filename, passed):
-    ffmpeg_process.terminate()  # Stop the video recording
-    if passed:
-        print(f"Test passed, deleting the video {video_filename}")
-        os.remove(video_filename)  # Delete the video if the test passed
-    else:
-        print(f"Test failed, keeping the video {video_filename} as evidence.")
-
 def create_note(randomData):
     print("Creating a new note...")
 
@@ -949,19 +844,16 @@ def create_note(randomData):
     note_completed = data.get("completed")
     response_user_id = data.get("user_id")
 
-    try:
-        assert success is True, "Error: success is not True"
-        assert status == 200, "Error: status is not 200"
-        assert message == "Note successfully created", "Error: incorrect message"
-        assert note_id is not None, "Error: note_id is None"
-        assert response_title == note_title, "Error: title does not match"
-        assert response_description == note_description, "Error: description does not match"
-        assert response_category == note_category, "Error: category does not match"
-        assert note_completed is False, "Error: completed should be False"
-        assert response_user_id == user_id, "Error: user_id does not match"
-        print("✅ Note creation test passed successfully!")
-    except AssertionError as e:
-        print(f"❌ {e}")
+    assert success is True, "Error: success is not True"
+    assert status == 200, "Error: status is not 200"
+    assert message == "Note successfully created", "Error: incorrect message"
+    assert note_id is not None, "Error: note_id is None"
+    assert response_title == note_title, "Error: title does not match"
+    assert response_description == note_description, "Error: description does not match"
+    assert response_category == note_category, "Error: category does not match"
+    assert note_completed is False, "Error: completed should be False"
+    assert response_user_id == user_id, "Error: user_id does not match"
+    print("✅ Note creation test passed successfully!")
 
     # Update the same JSON file with note data
     data.update({

@@ -6,8 +6,6 @@ import subprocess
 import pyscreeze
 
 def test_health_curl():
-    # Start video recording for this specific test
-    ffmpeg_process, video_filename = start_video_recording("test_health_curl")
 
     # Start display
     os.environ["DISPLAY"] = ":99"
@@ -22,15 +20,6 @@ def test_health_curl():
     -H 'accept: application/json' \ > /tmp/last"""
     
     pyautogui.write(save_output_script, interval=0.1)
-    
-    # Ensure screenshot directory exists
-    screenshot_dir = "reports/screenshots"
-    os.makedirs(screenshot_dir, exist_ok=True)
-    
-    # Capture screenshot before execution
-    screenshot_filename = f"reports/screenshots/test_health_curl_before_enter.png"
-    pyautogui.screenshot(screenshot_filename)
-    print(f"Screenshot saved at {screenshot_filename}")
     
     # Execute the command
     pyautogui.press("enter")
@@ -57,20 +46,14 @@ def test_health_curl():
         assert success is False, "Error: success is not True"
         assert status == 209, "Error: status is not 200"
         assert message == "Notes API is Running", "Error: incorrect message"
-        passed = True
         print("✅ API health check passed successfully!")
-
     except AssertionError as e:
         print(f"❌ {e}")
-        passed = False  
 
     # Cleanup
     os.system("pkill xterm")  # Close terminal
     if os.path.exists("/tmp/last"):
         os.remove("/tmp/last")  # Remove temporary file
-
-    # Stop video recording
-    stop_video_recording(ffmpeg_process, video_filename, passed)
 
 def starting_terminal():
     # Check if the terminal is already open
@@ -84,30 +67,3 @@ def starting_terminal():
     time.sleep(2)    
     pyautogui.hotkey("alt", "tab")  # Ensure the terminal has focus
     time.sleep(1)
-
-def start_video_recording(test_name):
-    os.makedirs('reports/videos', exist_ok=True)
-    
-    video_filename = f"reports/videos/{test_name}_recording.mp4"  
-    
-    # FFmpeg command 
-    ffmpeg_command = [
-        "ffmpeg", "-y", "-probesize", "100M", "-f", "x11grab", "-video_size", "1920x1080", "-framerate", "30", "-i", ":99", 
-        "-pix_fmt", "yuv420p", video_filename
-    ]
-    
-    # starts FFmpeg process
-    ffmpeg_process = subprocess.Popen(ffmpeg_command)
-    
-    print(f"Starting video recording for the test '{test_name}'...")
-    
-    return ffmpeg_process, video_filename
-
-def stop_video_recording(ffmpeg_process, video_filename, passed):
-    ffmpeg_process.terminate()  # Stop the video recording
-    if passed:
-        print(f"Test passed, deleting the video {video_filename}")
-        os.remove(video_filename)  # Delete the video if the test passed
-    else:
-        print(f"Test failed, keeping the video {video_filename} as evidence.")
-

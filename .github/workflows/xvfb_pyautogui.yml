@@ -19,14 +19,14 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y xvfb x11-utils xauth ffmpeg imagemagick python3-tk fluxbox xterm gnome-screenshot
+          sudo apt install -y xvfb x11-utils xauth python3-tk fluxbox xterm
           python3 -m pip install --upgrade pip
-          python3 -m pip install pytest pyautogui Faker pytest-html pyscreeze Pillow 
+          python3 -m pip install pytest pyautogui Faker pytest-html 
 
       - name: List versions of apt dependencies
         run: |
           echo "Versions of apt dependencies:"
-          apt list --installed xvfb x11-utils xauth ffmpeg imagemagick python3-tk fluxbox xterm
+          apt list --installed xvfb x11-utils xauth python3-tk fluxbox xterm
 
       - name: List versions of pip dependencies
         run: |
@@ -53,9 +53,8 @@ jobs:
       - name: Run Pytest (executes the test that opens the terminal)
         run: |
           export DISPLAY=:99
-          pytest ./tests/health_test.py -v --html=./reports/report.html --self-contained-html || exit 1
+          pytest ./tests/health_test.py -v --html=./reports/report.html --self-contained-html 
         shell: /usr/bin/bash -e {0}
-        continue-on-error: true  # Added to ensure the flow continues even if tests fail
 
       - name: Upload test report
         if: always()  # Ensures the upload happens regardless of test success
@@ -64,21 +63,4 @@ jobs:
           name: test-report
           path: reports/report.html
 
-      - name: Ensure screenshots folder exists
-        if: failure()  # Only runs if any test failed
-        run: |
-          mkdir -p reports/screenshots
-
-      - name: Upload screenshots if test failed
-        if: failure()  # Only uploads if any test failed
-        uses: actions/upload-artifact@v4
-        with:
-          name: failed-screenshots
-          path: reports/screenshots/*.png  # Uploads all screenshots from the reports/screenshots folder
-
-      - name: Upload failed test videos
-        if: failure()  # Only uploads if any test failed
-        uses: actions/upload-artifact@v4
-        with:
-          name: failed-videos
-          path: reports/videos/*.mp4  # Uploads all videos recorded in the reports/videos/ folder
+      
