@@ -38,8 +38,8 @@ def test_health_curl():
 
     print(f"Extracted data: success={success}, status={status}, message='{message}'")
 
-    assert success is False, "Error: success is not True"
-    assert status == 209, "Error: status is not 200"
+    assert success is True, "Error: success is not True"
+    assert status == 200, "Error: status is not 200"
     assert message == "Notes API is Running", "Error: incorrect message"
     print("✅ API health check passed successfully!")
 

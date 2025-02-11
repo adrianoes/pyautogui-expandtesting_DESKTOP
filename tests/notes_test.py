@@ -252,7 +252,6 @@ def test_get_notes_curl():
     assert response_note_created_at2 == note_created_at2, "Error: note_created_at2 does not match"
     assert response_note_updated_at2 == note_updated_at2, "Error: note_updated_at2 does not match"
     assert response_user_id2 == user_id, "Error: user_id2 does not match"
-
     print("✅ Notes retrieval test passed successfully!")
 
     # Delete user after the test
