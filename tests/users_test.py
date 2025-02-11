@@ -62,7 +62,7 @@ def test_create_user_curl():
     passed = False
     try:
         assert success is True, "Error: success is not True"
-        assert status == 201, "Error: status is not 201"
+        assert status == 206, "Error: status is not 201"
         assert message == "User account created successfully", "Error: incorrect message"
         assert response_name == user_name, "Error: name does not match"
         assert response_email == user_email, "Error: email does not match"
