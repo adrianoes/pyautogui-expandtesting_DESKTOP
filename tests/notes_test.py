@@ -433,7 +433,7 @@ def test_update_note_curl():
     assert response_title == updated_note_title, "Error: title does not match"
     assert response_description == updated_note_description, "Error: description does not match"
     assert response_category == updated_note_category, "Error: category does not match"
-    assert response_completed == updated_note_completed, "Error: completed status does not match"
+    assert response_completed is True, "Error: completed status does not match"
     assert response_user_id == user_id, "Error: user_id does not match"
     assert response_created_at == note_created_at, "Error: created_at should not be updated"
     assert response_updated_at != note_updated_at, "Error: updated_at should be different from the previous one"
