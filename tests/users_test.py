@@ -22,8 +22,12 @@ def test_create_user_curl():
     user_email = fake.company_email()
     user_name = fake.name()
     password_length = random.randint(8, 28) # The &character is not supported. In case random function choose a special character, it will choose inside the range below, which does not contains &.
-    user_password = fake.password(length=password_length, special_chars='!@#$%^*()-_=+[]{}|;:,.<>?/')
-    
+    while True:
+        user_password = fake.password(length=password_length)
+        if "&" not in user_password:
+            break 
+    print(user_password)    
+
     save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/users/register' -H 'accept: application/json' -H 'Content-Type: application/x-www-form-urlencoded' -d 'name={user_name}&email={user_email}&password={user_password}' > /tmp/last"""    
 
     print(user_password)
@@ -335,8 +339,12 @@ def test_change_user_password_curl():
     # Generate a new password
     fake = Faker()
     user_new_password_length = random.randint(8, 28) # The &character is not supported. In case random function choose a special character, it will choose inside the range below, which does not contains &.
-    user_new_password = fake.password(length=user_new_password_length, special_chars='!@#$%^*()-_=+[]{}|;:,.<>?/')
-    
+    while True:
+        user_new_password = fake.password(length=user_new_password_length)
+        if "&" not in user_new_password:
+            break 
+    print(user_new_password)    
+
     # Load user details from JSON file
     json_file_path = f"./resources/file-{randomData}.json"
     with open(json_file_path, 'r') as json_file:
@@ -501,8 +509,12 @@ def create_user(randomData):
     user_email = fake.company_email()
     user_name = fake.name()
     password_length = random.randint(8, 28) # The &character is not supported. In case random function choose a special character, it will choose inside the range below, which does not contains &.
-    user_password = fake.password(length=password_length, special_chars='!@#$%^*()-_=+[]{}|;:,.<>?/')
-
+    while True:
+        user_password = fake.password(length=password_length)
+        if "&" not in user_password:
+            break 
+    print(user_password) 
+    
     save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/users/register' -H 'accept: application/json' -H 'Content-Type: application/x-www-form-urlencoded' -d 'name={user_name}&email={user_email}&password={user_password}' > /tmp/last"""    
 
     print(user_password)
