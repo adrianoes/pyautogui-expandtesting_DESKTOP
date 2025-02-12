@@ -23,10 +23,8 @@ def test_create_user_curl():
     user_name = fake.name()
     password_length = random.randint(8, 28)
     user_password = fake.password(length=password_length)
-    save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/users/register' \
-    -H 'accept: application/json' \
-    -H 'Content-Type: application/x-www-form-urlencoded' \
-    -d 'name={user_name}&email={user_email}&password={user_password}' > /tmp/last"""    
+    
+    save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/users/register' -H 'accept: application/json' -H 'Content-Type: application/x-www-form-urlencoded' -d 'name={user_name}&email={user_email}&password={user_password}' > /tmp/last"""    
 
     print(user_password)
     print(save_output_script)
@@ -113,11 +111,10 @@ def test_login_user_curl():
         user_id = data['user_id']
 
     # Send login request
-    save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/users/login' \
-    -H 'accept: application/json' \
-    -H 'Content-Type: application/x-www-form-urlencoded' \
-    -d 'email={user_email}&password={user_password}' > /tmp/last"""
+    save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/users/login' -H 'accept: application/json' -H 'Content-Type: application/x-www-form-urlencoded' -d 'email={user_email}&password={user_password}' > /tmp/last"""
+    
     pyautogui.write(save_output_script, interval=0.1)
+
     pyautogui.press("enter")
     time.sleep(10)
 
@@ -203,9 +200,8 @@ def test_retrieve_user_curl():
         user_token = data['user_token']
 
     # Send GET request to fetch profile
-    save_output_script = f"""curl -X 'GET' 'https://practice.expandtesting.com/notes/api/users/profile' \
-    -H 'accept: application/json' \
-    -H 'x-auth-token: {user_token}' > /tmp/profile_response"""
+    save_output_script = f"""curl -X 'GET' 'https://practice.expandtesting.com/notes/api/users/profile' -H 'accept: application/json' -H 'x-auth-token: {user_token}' > /tmp/profile_response"""
+    
     pyautogui.write(save_output_script, interval=0.1)
     pyautogui.press("enter")
     time.sleep(10)
@@ -275,11 +271,8 @@ def test_update_user_curl():
         user_token = data['user_token']
 
     # Send PATCH request to update profile
-    save_output_script = f"""curl -X 'PATCH' 'https://practice.expandtesting.com/notes/api/users/profile' \
-    -H 'accept: application/json' \
-    -H 'x-auth-token: {user_token}' \
-    -H 'Content-Type: application/x-www-form-urlencoded' \
-    -d 'name={user_name}&phone={user_phone}&company={user_company}' > /tmp/update_response"""
+    save_output_script = f"""curl -X 'PATCH' 'https://practice.expandtesting.com/notes/api/users/profile' -H 'accept: application/json' -H 'x-auth-token: {user_token}' -H 'Content-Type: application/x-www-form-urlencoded' -d 'name={user_name}&phone={user_phone}&company={user_company}' > /tmp/update_response"""
+    
     pyautogui.write(save_output_script, interval=0.1)
     pyautogui.press("enter")
     time.sleep(10)
@@ -351,11 +344,8 @@ def test_change_user_password_curl():
         user_token = data['user_token']
 
     # Send POST request to update password
-    save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/users/change-password' \
-    -H 'accept: application/json' \
-    -H 'x-auth-token: {user_token}' \
-    -H 'Content-Type: application/x-www-form-urlencoded' \
-    -d 'currentPassword={user_password}&newPassword={user_new_password}' > /tmp/password_update_response"""
+    save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/users/change-password' -H 'accept: application/json' -H 'x-auth-token: {user_token}' -H 'Content-Type: application/x-www-form-urlencoded' -d 'currentPassword={user_password}&newPassword={user_new_password}' > /tmp/password_update_response"""
+    
     print(user_new_password)
     print(save_output_script)
     pyautogui.write(save_output_script, interval=0.1)
@@ -413,9 +403,8 @@ def test_logout_user_curl():
         user_token = data['user_token']
 
     # Send DELETE request to log out
-    save_output_script = f"""curl -X 'DELETE' 'https://practice.expandtesting.com/notes/api/users/logout' \
-    -H 'accept: application/json' \
-    -H 'x-auth-token: {user_token}' > /tmp/logout_response"""
+    save_output_script = f"""curl -X 'DELETE' 'https://practice.expandtesting.com/notes/api/users/logout' -H 'accept: application/json' -H 'x-auth-token: {user_token}' > /tmp/logout_response"""
+    
     pyautogui.write(save_output_script, interval=0.1)
     pyautogui.press("enter")
     time.sleep(10)
@@ -475,9 +464,8 @@ def test_delete_user_curl():
     user_token = data['user_token']
 
     # Send DELETE request to delete the account
-    save_output_script = f"""curl -X 'DELETE' 'https://practice.expandtesting.com/notes/api/users/delete-account' \
-    -H 'accept: application/json' \
-    -H 'x-auth-token: {user_token}' > /tmp/delete_response"""
+    save_output_script = f"""curl -X 'DELETE' 'https://practice.expandtesting.com/notes/api/users/delete-account' -H 'accept: application/json' -H 'x-auth-token: {user_token}' > /tmp/delete_response"""
+   
     pyautogui.write(save_output_script, interval=0.1)
     pyautogui.press("enter")
     time.sleep(10)
@@ -513,10 +501,8 @@ def create_user(randomData):
     user_name = fake.name()
     password_length = random.randint(8, 28)
     user_password = fake.password(length=password_length)
-    save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/users/register' \
-    -H 'accept: application/json' \
-    -H 'Content-Type: application/x-www-form-urlencoded' \
-    -d 'name={user_name}&email={user_email}&password={user_password}' > /tmp/last"""    
+
+    save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/users/register' -H 'accept: application/json' -H 'Content-Type: application/x-www-form-urlencoded' -d 'name={user_name}&email={user_email}&password={user_password}' > /tmp/last"""    
 
     print(user_password)
     print(save_output_script)
@@ -578,10 +564,8 @@ def login_user(randomData):
         user_id = data['user_id']
 
     # Send login request
-    save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/users/login' \
-    -H 'accept: application/json' \
-    -H 'Content-Type: application/x-www-form-urlencoded' \
-    -d 'email={user_email}&password={user_password}' > /tmp/last"""
+    save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/users/login' -H 'accept: application/json' -H 'Content-Type: application/x-www-form-urlencoded' -d 'email={user_email}&password={user_password}' > /tmp/last"""
+    
     pyautogui.write(save_output_script, interval=0.1)
     pyautogui.press("enter")
     time.sleep(10)
@@ -640,9 +624,8 @@ def delete_user(randomData):
     user_token = data['user_token']
 
     # Send delete account request
-    save_output_script = f"""curl -X 'DELETE' 'https://practice.expandtesting.com/notes/api/users/delete-account' \
-    -H 'accept: application/json' \
-    -H 'x-auth-token: {user_token}' > /tmp/last"""
+    save_output_script = f"""curl -X 'DELETE' 'https://practice.expandtesting.com/notes/api/users/delete-account' -H 'accept: application/json' -H 'x-auth-token: {user_token}' > /tmp/last"""
+    
     pyautogui.write(save_output_script, interval=0.1)
     pyautogui.press("enter")
     time.sleep(10)

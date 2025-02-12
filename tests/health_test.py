@@ -14,8 +14,7 @@ def test_health_curl():
     # API Health Check
     print("Checking API health status...")
     
-    save_output_script = """curl -X 'GET' 'https://practice.expandtesting.com/notes/api/health-check' \
-    -H 'accept: application/json' \ > /tmp/last"""
+    save_output_script = """curl -X 'GET' 'https://practice.expandtesting.com/notes/api/health-check' -H 'accept: application/json' \ > /tmp/last"""
     
     pyautogui.write(save_output_script, interval=0.1)
     
