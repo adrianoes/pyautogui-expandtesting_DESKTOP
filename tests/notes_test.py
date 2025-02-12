@@ -608,8 +608,8 @@ def create_user(randomData):
     fake = Faker()
     user_email = fake.company_email()
     user_name = fake.name()
-    password_length = random.randint(8, 28)
-    user_password = fake.password(length=password_length)
+    password_length = random.randint(8, 28) # The &character is not supported. In case random function choose a special character, it will choose inside the range below, which does not contains &.
+    user_password = fake.password(length=password_length, special_chars='!@#$%^*()-_=+[]{}|;:,.<>?/')
 
     save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/users/register' -H 'accept: application/json' -H 'Content-Type: application/x-www-form-urlencoded' -d 'name={user_name}&email={user_email}&password={user_password}' > /tmp/last"""    
 
