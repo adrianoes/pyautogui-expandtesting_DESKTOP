@@ -382,12 +382,11 @@ def test_update_note_curl():
     # Generate new values for the note
     fake = Faker()
     updated_note_category = fake.random_element(elements=('Home', 'Personal', 'Work'))
-    updated_note_completed = True
     updated_note_description = fake.sentence(3)
     updated_note_title = fake.sentence(2)
 
     # cURL command to update the note by its ID
-    save_output_script = f"""curl -X 'PUT' 'https://practice.expandtesting.com/notes/api/notes/{note_id}' -H 'accept: application/json' -H 'x-auth-token: {user_token}' -H 'Content-Type: application/x-www-form-urlencoded' -d 'title={updated_note_title}&description={updated_note_description}&completed={updated_note_completed}&category={updated_note_category}' > /tmp/update_note_response"""
+    save_output_script = f"""curl -X 'PUT' 'https://practice.expandtesting.com/notes/api/notes/{note_id}' -H 'accept: application/json' -H 'x-auth-token: {user_token}' -H 'Content-Type: application/x-www-form-urlencoded' -d 'title={updated_note_title}&description={updated_note_description}&completed=true&category={updated_note_category}' > /tmp/update_note_response"""
     
     pyautogui.write(save_output_script, interval=0.1)
     pyautogui.press("enter")
