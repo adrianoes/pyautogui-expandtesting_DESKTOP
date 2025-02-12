@@ -41,7 +41,7 @@ def test_create_note_curl():
 
     # Send cURL request to create the note
     save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/notes' -H 'accept: application/json' -H 'x-auth-token: {user_token}' -H 'Content-Type: application/x-www-form-urlencoded' -d 'title={note_title}&description={note_description}&category={note_category}' > /tmp/note_response"""
-    
+    print(save_output_script)
     pyautogui.write(save_output_script, interval=0.1)
     pyautogui.press("enter")
     time.sleep(10)
@@ -799,7 +799,7 @@ def create_note(randomData):
 
     # Send cURL request to create the note
     save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/notes' -H 'accept: application/json' -H 'x-auth-token: {user_token}' -H 'Content-Type: application/x-www-form-urlencoded' -d 'title={note_title}&description={note_description}&category={note_category}' > /tmp/note_response"""
-    
+    print(save_output_script)
     pyautogui.write(save_output_script, interval=0.1)
     pyautogui.press("enter")
     time.sleep(10)
