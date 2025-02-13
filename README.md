@@ -1,6 +1,6 @@
 # pyautogui-expandtesting_DESKTOP
 
-Desktop testing in [expandtesting](https://practice.expandtesting.com/notes/api/api-docs/) API documentation through PyAutoGUI. This project contains basic examples on how to use PyAutoGUI to test Desktop tests. Good practices such as hooks, custom commands and tags, among others, are used. All the necessary support documentation to develop this project is placed here. 
+Desktop testing in [expandtesting](https://practice.expandtesting.com/notes/api/api-docs/) API documentation through PyAutoGUI. This project contains basic examples on how to use PyAutoGUI and other python libraries to open xterm in a display and send curl commands. Good practices such as hooks, custom commands and tags, among others, are used. All the necessary support documentation to develop this project is placed here. 
 
 # Pre-requirements:
 
