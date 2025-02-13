@@ -305,7 +305,7 @@ def test_login_user_unauthorized_curl():
         user_password = data['user_password']
 
     # Send login request
-    save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/users/login' -H 'accept: application/json' -H 'Content-Type: application/x-www-form-urlencoded' -d 'email=@{user_email}&password=@{user_password}' > /tmp/last"""
+    save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/users/login' -H 'accept: application/json' -H 'Content-Type: application/x-www-form-urlencoded' -d 'email={user_email}&password=@{user_password}' > /tmp/last"""
     
     pyautogui.write(save_output_script, interval=0.1)
 
@@ -949,7 +949,7 @@ def test_logout_user_unauthorized_curl():
         user_token = data['user_token']
 
     # Send DELETE request to log out
-    save_output_script = f"""curl -X 'DELETE' 'https://practice.expandtesting.com/notes/api/users/logout' -H 'accept: application/json' -H 'x-auth-token: {user_token}' > /tmp/logout_response"""
+    save_output_script = f"""curl -X 'DELETE' 'https://practice.expandtesting.com/notes/api/users/logout' -H 'accept: application/json' -H 'x-auth-token: @{user_token}' > /tmp/logout_response"""
     
     pyautogui.write(save_output_script, interval=0.1)
     pyautogui.press("enter")
