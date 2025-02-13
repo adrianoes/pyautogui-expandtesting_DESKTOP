@@ -89,6 +89,54 @@ def test_create_user_curl():
     # Delete .json file
     delete_json_file(randomData)
 
+def test_create_user_bad_request_curl():
+
+    # Starting the display
+    os.environ["DISPLAY"] = ":99"
+    
+    # Start terminal
+    starting_terminal()
+
+    # User registration
+    print("Registering new user...")
+    fake = Faker()
+    user_email = fake.company_email()
+    user_name = fake.name()
+    password_length = random.randint(8, 28) # The &character is not supported. In case random function choose a special character, it will choose inside the range below, which does not contains &.
+    while True:
+        user_password = fake.password(length=password_length)
+        if "&" not in user_password:
+            break 
+    print(user_password)    
+
+    save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/users/register' -H 'accept: application/json' -H 'Content-Type: application/x-www-form-urlencoded' -d 'name={user_name}&email=@{user_email}&password={user_password}' > /tmp/last"""    
+
+    print(user_password)
+    print(save_output_script)
+    pyautogui.write(save_output_script, interval=0.1)
+    time.sleep(2)     
+    pyautogui.press("enter")    
+    time.sleep(10)  
+
+    # Read the response from the file
+    with open("/tmp/last", "r") as file:
+        response_from_file = file.read().strip()    
+    print(f"Captured response: {response_from_file}")
+
+    # Extracting values from the response
+    response_json = json.loads(response_from_file)
+    success = response_json.get("success")
+    status = response_json.get("status")
+    message = response_json.get("message")
+
+    # Assertions for user registration failure
+    assert success is False, "Error: success is not False"
+    assert status == 400, "Error: status is not 400"
+    assert message == "A valid email address is required", "Error: incorrect message"
+
+    # Close the terminal after testing
+    os.system("pkill xterm")
+
 def test_login_user_curl():
 
     # Creating random number so we can use custom commands
@@ -175,6 +223,122 @@ def test_login_user_curl():
     # Delete .json file
     delete_json_file(randomData)
 
+def test_login_user_bad_request_curl():
+
+    # Creating random number so we can use custom commands
+    randomData = Faker().hexify(text='^^^^^^^^^^^^')
+
+    # Starting the display
+    os.environ["DISPLAY"] = ":99"
+    
+    # Start terminal
+    starting_terminal()
+
+    # Create user
+    create_user(randomData)
+
+    print("Logging in with created user...")
+
+    # Load the user credentials from file
+    json_file_path = f"./resources/file-{randomData}.json"
+    with open(json_file_path, 'r') as json_file:
+        data = json.load(json_file)
+        user_email = data['user_email']
+        user_password = data['user_password']
+
+    # Send login request
+    save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/users/login' -H 'accept: application/json' -H 'Content-Type: application/x-www-form-urlencoded' -d 'email=@{user_email}&password={user_password}' > /tmp/last"""
+    
+    pyautogui.write(save_output_script, interval=0.1)
+
+    pyautogui.press("enter")
+    time.sleep(10)
+
+    # Read login response
+    with open("/tmp/last", "r") as file:
+        response_from_file = file.read().strip()
+    print(f"Captured login response: {response_from_file}")
+
+    # Extracting values from the response
+    response_json = json.loads(response_from_file)
+    success = response_json.get("success")
+    status = response_json.get("status")
+    message = response_json.get("message")
+
+    # Assertions for user registration failure
+    assert success is False, "Error: success is not False"
+    assert status == 400, "Error: status is not 400"
+    assert message == "A valid email address is required", "Error: incorrect message"  
+
+    login_user(randomData)
+    
+    # Delete user
+    delete_user(randomData)
+
+    # Close the terminal after testing
+    os.system("pkill xterm")
+    
+    # Delete .json file
+    delete_json_file(randomData)
+
+def test_login_user_unauthorized_curl():
+
+    # Creating random number so we can use custom commands
+    randomData = Faker().hexify(text='^^^^^^^^^^^^')
+
+    # Starting the display
+    os.environ["DISPLAY"] = ":99"
+    
+    # Start terminal
+    starting_terminal()
+
+    # Create user
+    create_user(randomData)
+
+    print("Logging in with created user...")
+
+    # Load the user credentials from file
+    json_file_path = f"./resources/file-{randomData}.json"
+    with open(json_file_path, 'r') as json_file:
+        data = json.load(json_file)
+        user_email = data['user_email']
+        user_password = data['user_password']
+
+    # Send login request
+    save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/users/login' -H 'accept: application/json' -H 'Content-Type: application/x-www-form-urlencoded' -d 'email=@{user_email}&password=@{user_password}' > /tmp/last"""
+    
+    pyautogui.write(save_output_script, interval=0.1)
+
+    pyautogui.press("enter")
+    time.sleep(10)
+
+    # Read login response
+    with open("/tmp/last", "r") as file:
+        response_from_file = file.read().strip()
+    print(f"Captured login response: {response_from_file}")
+
+    # Extracting values from the response
+    response_json = json.loads(response_from_file)
+    success = response_json.get("success")
+    status = response_json.get("status")
+    message = response_json.get("message")
+
+    # Assertions for user registration failure
+    assert success is False, "Error: success is not False"
+    assert status == 401, "Error: status is not 401"
+    assert message == "Incorrect email address or password", "Error: incorrect message"  
+
+    login_user(randomData)
+    
+    # Delete user
+    delete_user(randomData)
+
+    # Close the terminal after testing
+    os.system("pkill xterm")
+    
+    # Delete .json file
+    delete_json_file(randomData)
+
 def test_retrieve_user_curl():
 
     # Creating random number so we can use custom commands
@@ -232,6 +396,62 @@ def test_retrieve_user_curl():
     assert response_name == user_name, "Error: name does not match"
     assert response_email == user_email, "Error: email does not match"
     print("✅ Profile retrieval test passed successfully!")
+
+    # Delete user
+    delete_user(randomData)
+
+    # Close the terminal after testing
+    os.system("pkill xterm")
+    
+    # Delete .json file
+    delete_json_file(randomData)
+
+def test_retrieve_user_unauthorized_curl():
+
+    # Creating random number so we can use custom commands
+    randomData = Faker().hexify(text='^^^^^^^^^^^^')
+
+    # Starting the display
+    os.environ["DISPLAY"] = ":99"
+    
+    # Start terminal
+    starting_terminal()
+    
+    # Create user
+    create_user(randomData)
+
+    # Login user
+    login_user(randomData)
+
+    print("Retrieving user profile...")
+
+    # Load user details from JSON file
+    json_file_path = f"./resources/file-{randomData}.json"
+    with open(json_file_path, 'r') as json_file:
+        data = json.load(json_file)
+        user_token = data['user_token']
+
+    # Send GET request to fetch profile
+    save_output_script = f"""curl -X 'GET' 'https://practice.expandtesting.com/notes/api/users/profile' -H 'accept: application/json' -H 'x-auth-token: @{user_token}' > /tmp/profile_response"""
+    
+    pyautogui.write(save_output_script, interval=0.1)
+    pyautogui.press("enter")
+    time.sleep(10)
+
+    # Read profile response
+    with open("/tmp/profile_response", "r") as file:
+        response_from_file = file.read().strip()
+    print(f"Captured profile response: {response_from_file}")
+
+    # Extract profile response
+    response_json = json.loads(response_from_file)
+    success = response_json.get("success")
+    status = response_json.get("status")
+    message = response_json.get("message")  
+
+    assert success is False, "Error: success is not False"
+    assert status == 401, "Error: status is not 401"
+    assert message == "Access token is not valid or has expired, you will need to login", "Error: incorrect message" 
 
     # Delete user
     delete_user(randomData)
@@ -317,6 +537,127 @@ def test_update_user_curl():
     # Delete .json file
     delete_json_file(randomData)
 
+def test_update_user_bad_request_curl():
+
+    # Creating random number so we can use custom commands
+    randomData = Faker().hexify(text='^^^^^^^^^^^^')
+
+    # Starting the display
+    os.environ["DISPLAY"] = ":99"
+    
+    # Start terminal
+    starting_terminal()
+    
+    # Create user
+    create_user(randomData)
+
+    # Login user
+    login_user(randomData)
+
+    print("Updating user profile...")
+
+    fake = Faker()
+    user_phone = fake.bothify(text='############')
+    user_company = fake.company()
+
+    # Load user details from JSON file
+    json_file_path = f"./resources/file-{randomData}.json"
+    with open(json_file_path, 'r') as json_file:
+        data = json.load(json_file)
+        user_token = data['user_token']
+
+    # Send PATCH request to update profile
+    save_output_script = f"""curl -X 'PATCH' 'https://practice.expandtesting.com/notes/api/users/profile' -H 'accept: application/json' -H 'x-auth-token: {user_token}' -H 'Content-Type: application/x-www-form-urlencoded' -d 'name=a@#&phone={user_phone}&company={user_company}' > /tmp/update_response"""
+    
+    pyautogui.write(save_output_script, interval=0.1)
+    pyautogui.press("enter")
+    time.sleep(10)
+
+    # Read update response
+    with open("/tmp/update_response", "r") as file:
+        response_from_file = file.read().strip()
+    print(f"Captured update response: {response_from_file}")
+
+    # Extract update response
+    response_json = json.loads(response_from_file)
+    success = response_json.get("success")
+    status = response_json.get("status")
+    message = response_json.get("message")
+
+    assert success is False, "Error: success is not False"
+    assert status == 400, "Error: status is not 400"
+    assert message == "User name must be between 4 and 30 characters", "Error: incorrect message"
+
+    # Delete user
+    delete_user(randomData)
+
+    # Close the terminal after testing
+    os.system("pkill xterm")
+    
+    # Delete .json file
+    delete_json_file(randomData)
+
+def test_update_user_unauthorized_curl():
+
+    # Creating random number so we can use custom commands
+    randomData = Faker().hexify(text='^^^^^^^^^^^^')
+
+    # Starting the display
+    os.environ["DISPLAY"] = ":99"
+    
+    # Start terminal
+    starting_terminal()
+    
+    # Create user
+    create_user(randomData)
+
+    # Login user
+    login_user(randomData)
+
+    print("Updating user profile...")
+
+    fake = Faker()
+    user_phone = fake.bothify(text='############')
+    user_company = fake.company()
+
+    # Load user details from JSON file
+    json_file_path = f"./resources/file-{randomData}.json"
+    with open(json_file_path, 'r') as json_file:
+        data = json.load(json_file)
+        user_name = data['user_name']
+        user_token = data['user_token']
+
+    # Send PATCH request to update profile
+    save_output_script = f"""curl -X 'PATCH' 'https://practice.expandtesting.com/notes/api/users/profile' -H 'accept: application/json' -H 'x-auth-token: @{user_token}' -H 'Content-Type: application/x-www-form-urlencoded' -d 'name={user_name}&phone={user_phone}&company={user_company}' > /tmp/update_response"""
+    
+    pyautogui.write(save_output_script, interval=0.1)
+    pyautogui.press("enter")
+    time.sleep(10)
+
+    # Read update response
+    with open("/tmp/update_response", "r") as file:
+        response_from_file = file.read().strip()
+    print(f"Captured update response: {response_from_file}")
+
+    # Extract update response
+    response_json = json.loads(response_from_file)
+    success = response_json.get("success")
+    status = response_json.get("status")
+    message = response_json.get("message")
+
+    assert success is False, "Error: success is not False"
+    assert status == 401, "Error: status is not 401"
+    assert message == "Access token is not valid or has expired, you will need to login", "Error: incorrect message"
+
+    # Delete user
+    delete_user(randomData)
+
+    # Close the terminal after testing
+    os.system("pkill xterm")
+    
+    # Delete .json file
+    delete_json_file(randomData)
+
 def test_change_user_password_curl():
 
     # Creating random data
@@ -376,6 +717,142 @@ def test_change_user_password_curl():
     assert status == 200, "Error: status is not 200"
     assert message == "The password was successfully updated", "Error: incorrect message"
     print("✅ Password update test passed successfully!")
+
+    # Delete user
+    delete_user(randomData)
+
+    # Close the terminal after testing
+    os.system("pkill xterm")
+    
+    # Delete .json file
+    delete_json_file(randomData)
+
+def test_change_user_password_bad_request_curl():
+
+    # Creating random data
+    randomData = Faker().hexify(text='^^^^^^^^^^^^')
+
+    # Starting the display
+    os.environ["DISPLAY"] = ":99"
+    
+    # Start terminal
+    starting_terminal()
+    
+    # Create user
+    create_user(randomData)
+
+    # Login user
+    login_user(randomData)
+
+    print("Updating user password...")
+
+    # Generate a new password
+    fake = Faker()
+    user_new_password_length = random.randint(8, 28) # The &character is not supported. In case random function choose a special character, it will choose inside the range below, which does not contains &.
+    while True:
+        user_new_password = fake.password(length=user_new_password_length)
+        if "&" not in user_new_password:
+            break 
+    print(user_new_password)    
+
+    # Load user details from JSON file
+    json_file_path = f"./resources/file-{randomData}.json"
+    with open(json_file_path, 'r') as json_file:
+        data = json.load(json_file)
+        user_password = data['user_password']
+        user_token = data['user_token']
+
+    # Send POST request to update password
+    save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/users/change-password' -H 'accept: application/json' -H 'x-auth-token: {user_token}' -H 'Content-Type: application/x-www-form-urlencoded' -d 'currentPassword={user_password}&newPassword=123' > /tmp/password_update_response"""
+    
+    print(user_new_password)
+    print(save_output_script)
+    pyautogui.write(save_output_script, interval=0.1)
+    pyautogui.press("enter")
+    time.sleep(10)
+
+    # Read update response
+    with open("/tmp/password_update_response", "r") as file:
+        response_from_file = file.read().strip()
+    print(f"Captured password update response: {response_from_file}")
+
+    # Extract update response
+    response_json = json.loads(response_from_file)
+    success = response_json.get("success")
+    status = response_json.get("status")
+    message = response_json.get("message")
+
+    assert success is False, "Error: success is not False"
+    assert status == 400, "Error: status is not 400"
+    assert message == "New password must be between 6 and 30 characters", "Error: incorrect message"
+
+    # Delete user
+    delete_user(randomData)
+
+    # Close the terminal after testing
+    os.system("pkill xterm")
+    
+    # Delete .json file
+    delete_json_file(randomData)
+
+def test_change_user_password_unauthorized_curl():
+
+    # Creating random data
+    randomData = Faker().hexify(text='^^^^^^^^^^^^')
+
+    # Starting the display
+    os.environ["DISPLAY"] = ":99"
+    
+    # Start terminal
+    starting_terminal()
+    
+    # Create user
+    create_user(randomData)
+
+    # Login user
+    login_user(randomData)
+
+    print("Updating user password...")
+
+    # Generate a new password
+    fake = Faker()
+    user_new_password_length = random.randint(8, 28) # The &character is not supported. In case random function choose a special character, it will choose inside the range below, which does not contains &.
+    while True:
+        user_new_password = fake.password(length=user_new_password_length)
+        if "&" not in user_new_password:
+            break 
+    print(user_new_password)    
+
+    # Load user details from JSON file
+    json_file_path = f"./resources/file-{randomData}.json"
+    with open(json_file_path, 'r') as json_file:
+        data = json.load(json_file)
+        user_password = data['user_password']
+        user_token = data['user_token']
+
+    # Send POST request to update password
+    save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/users/change-password' -H 'accept: application/json' -H 'x-auth-token: @{user_token}' -H 'Content-Type: application/x-www-form-urlencoded' -d 'currentPassword={user_password}&newPassword={user_new_password}' > /tmp/password_update_response"""
+    
+    print(user_new_password)
+    print(save_output_script)
+    pyautogui.write(save_output_script, interval=0.1)
+    pyautogui.press("enter")
+    time.sleep(10)
+
+    # Read update response
+    with open("/tmp/password_update_response", "r") as file:
+        response_from_file = file.read().strip()
+    print(f"Captured password update response: {response_from_file}")
+
+    # Extract update response
+    response_json = json.loads(response_from_file)
+    success = response_json.get("success")
+    status = response_json.get("status")
+    message = response_json.get("message")
+
+    assert success is False, "Error: success is not Falsee"
+    assert status == 401, "Error: status is not 401"
+    assert message == "Access token is not valid or has expired, you will need to login", "Error: incorrect message"
 
     # Delete user
     delete_user(randomData)
@@ -446,6 +923,62 @@ def test_logout_user_curl():
     # Delete .json file
     delete_json_file(randomData)
 
+def test_logout_user_unauthorized_curl():
+
+    # Creating random number so we can use custom commands
+    randomData = Faker().hexify(text='^^^^^^^^^^^^')
+
+    # Starting the display
+    os.environ["DISPLAY"] = ":99"
+    
+    # Start terminal
+    starting_terminal()
+    
+    # Create user
+    create_user(randomData)
+
+    # Login user
+    login_user(randomData)
+
+    print("Logging out user...")
+
+    # Load user details from JSON file
+    json_file_path = f"./resources/file-{randomData}.json"
+    with open(json_file_path, 'r') as json_file:
+        data = json.load(json_file)
+        user_token = data['user_token']
+
+    # Send DELETE request to log out
+    save_output_script = f"""curl -X 'DELETE' 'https://practice.expandtesting.com/notes/api/users/logout' -H 'accept: application/json' -H 'x-auth-token: {user_token}' > /tmp/logout_response"""
+    
+    pyautogui.write(save_output_script, interval=0.1)
+    pyautogui.press("enter")
+    time.sleep(10)
+
+    # Read logout response
+    with open("/tmp/logout_response", "r") as file:
+        response_from_file = file.read().strip()
+    print(f"Captured logout response: {response_from_file}")
+
+    # Extract logout response
+    response_json = json.loads(response_from_file)
+    success = response_json.get("success")
+    status = response_json.get("status")
+    message = response_json.get("message")
+
+    assert success is False, "Error: success is not False"
+    assert status == 401, "Error: status is not 401"
+    assert message == "Access token is not valid or has expired, you will need to login", "Error: incorrect message"
+
+    # Delete user
+    delete_user(randomData)
+
+    # Close the terminal after testing
+    os.system("pkill xterm")
+    
+    # Delete .json file
+    delete_json_file(randomData)
+
 def test_delete_user_curl():
 
     # Creating random number so we can use custom commands
@@ -495,6 +1028,61 @@ def test_delete_user_curl():
     assert status == 200, "Error: status is not 200"
     assert message == "Account successfully deleted", "Error: incorrect message"
     print("✅ User account deleted successfully!")
+
+    # Close the terminal after testing
+    os.system("pkill xterm")
+    
+    # Delete .json file
+    delete_json_file(randomData)
+
+def test_delete_user_unauthorized_curl():
+
+    # Creating random number so we can use custom commands
+    randomData = Faker().hexify(text='^^^^^^^^^^^^')
+
+    # Starting the display
+    os.environ["DISPLAY"] = ":99"
+    
+    # Start terminal
+    starting_terminal()
+    
+    # Create user
+    create_user(randomData)
+
+    # Login user
+    login_user(randomData)
+
+    # Deleting the user using the token    
+    print("Deleting user...")
+
+    # Load the user credentials from file
+    json_file_path = f"./resources/file-{randomData}.json"
+    with open(json_file_path, 'r') as json_file:
+        data = json.load(json_file)
+    user_token = data['user_token']
+
+    # Send DELETE request to delete the account
+    save_output_script = f"""curl -X 'DELETE' 'https://practice.expandtesting.com/notes/api/users/delete-account' -H 'accept: application/json' -H 'x-auth-token: @{user_token}' > /tmp/delete_response"""
+   
+    pyautogui.write(save_output_script, interval=0.1)
+    pyautogui.press("enter")
+    time.sleep(10)
+
+    # Read delete account response
+    with open("/tmp/delete_response", "r") as file:
+        response_from_file = file.read().strip()
+    print(f"Captured delete account response: {response_from_file}")
+
+    # Extract delete account response
+    response_json = json.loads(response_from_file)
+    success = response_json.get("success")
+    status = response_json.get("status")
+    message = response_json.get("message")
+
+    # Assertions for account deletion
+    assert success is False, "Error: success is not False"
+    assert status == 401, "Error: status is not 401"
+    assert message == "Access token is not valid or has expired, you will need to login", "Error: incorrect message"
 
     # Close the terminal after testing
     os.system("pkill xterm")
