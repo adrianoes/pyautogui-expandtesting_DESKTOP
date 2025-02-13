@@ -9,17 +9,16 @@ Desktop testing in [expandtesting](https://practice.expandtesting.com/notes/api/
 | Visual Studio Code              | 1.96.4                      |                           |
 | Python                          | 3.12.5                      |                           |
 | Python VSC Extension            | 2024.22.2                   |                           |
-| PyAutoGUI                       | 0.9.54                      |                           | 
-| Pyperclip                       | 1.9.0                       |                           |            
+| PyAutoGUI                       | 0.9.54                      |                           |           
 | Pytest                          | 8.3.4                       |                           |
 | Faker                           | 35.2.0                      |                           |
 | pytest-html                     | 4.1.1                       |                           |
-| xvfb                            | 2:21.1.12-1ubuntu1.1        | Remote dependency only.   |
-| x11-utils                       | 7.7+6build2                 | Remote dependency only.   |
-| xauth                           | 1:1.1.2-1build1             | Remote dependency only.   |
-| fluxbox                         | 1.3.7-1build2               | Remote dependency only.   |
-| python3-tk                      | 3.12.3-0ubuntu1             | Remote dependency only.   |
-| xterm                           | 390-1ubuntu3                | Remote dependency only.   |
+| xvfb                            | 2:21.1.12-1ubuntu1.1        |                           |
+| x11-utils                       | 7.7+6build2                 |                           |
+| xauth                           | 1:1.1.2-1build1             |                           |
+| fluxbox                         | 1.3.7-1build2               |                           |
+| python3-tk                      | 3.12.3-0ubuntu1             |                           |
+| xterm                           | 390-1ubuntu3                |                           |
 
 # Installation:
 
@@ -67,4 +66,4 @@ and keep all the other preferenced options as they are.
 # Tips:
 
 - API tests to send password reset link to user's email and to verify a password reset token and reset a user's password must be tested manually as they rely on e-mail verification.
-- Python presented better performance calling functions from same files as tests. I will check better approaches.
+- Python presented better performance calling functions from same files as tests.
