@@ -36,8 +36,8 @@ def test_create_note_curl():
     # Generate note details
     fake = Faker()
     note_category = fake.random_element(elements=('Home', 'Personal', 'Work'))
-    note_description = fake.sentence(3)
-    note_title = fake.sentence(2)
+    note_description = fake.sentence(4)
+    note_title = fake.sentence(4)
 
     # Send cURL request to create the note
     save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/notes' -H 'accept: application/json' -H 'x-auth-token: {user_token}' -H 'Content-Type: application/x-www-form-urlencoded' -d 'title={note_title}&description={note_description}&category={note_category}' > /tmp/note_response"""
@@ -139,8 +139,8 @@ def test_create_note_bad_request_curl():
 
     # Generate note details
     fake = Faker()
-    note_description = fake.sentence(3)
-    note_title = fake.sentence(2)
+    note_description = fake.sentence(4)
+    note_title = fake.sentence(4)
 
     # Send cURL request to create the note
     save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/notes' -H 'accept: application/json' -H 'x-auth-token: {user_token}' -H 'Content-Type: application/x-www-form-urlencoded' -d 'title={note_title}&description={note_description}&category=a' > /tmp/note_response"""
@@ -203,8 +203,8 @@ def test_create_note_unauthorized_curl():
     # Generate note details
     fake = Faker()
     note_category = fake.random_element(elements=('Home', 'Personal', 'Work'))
-    note_description = fake.sentence(3)
-    note_title = fake.sentence(2)
+    note_description = fake.sentence(4)
+    note_title = fake.sentence(4)
 
     # Send cURL request to create the note
     save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/notes' -H 'accept: application/json' -H 'x-auth-token: @{user_token}' -H 'Content-Type: application/x-www-form-urlencoded' -d 'title={note_title}&description={note_description}&category={note_category}' > /tmp/note_response"""
@@ -656,8 +656,8 @@ def test_update_note_curl():
     # Generate new values for the note
     fake = Faker()
     updated_note_category = fake.random_element(elements=('Home', 'Personal', 'Work'))
-    updated_note_description = fake.sentence(3)
-    updated_note_title = fake.sentence(2)
+    updated_note_description = fake.sentence(4)
+    updated_note_title = fake.sentence(4)
 
     # cURL command to update the note by its ID
     save_output_script = f"""curl -X 'PUT' 'https://practice.expandtesting.com/notes/api/notes/{note_id}' -H 'accept: application/json' -H 'x-auth-token: {user_token}' -H 'Content-Type: application/x-www-form-urlencoded' -d 'title={updated_note_title}&description={updated_note_description}&completed=true&category={updated_note_category}' > /tmp/update_note_response"""
@@ -748,8 +748,8 @@ def test_update_note_bad_request_curl():
 
     # Generate new values for the note
     fake = Faker()
-    updated_note_description = fake.sentence(3)
-    updated_note_title = fake.sentence(2)
+    updated_note_description = fake.sentence(4)
+    updated_note_title = fake.sentence(4)
 
     # cURL command to update the note by its ID
     save_output_script = f"""curl -X 'PUT' 'https://practice.expandtesting.com/notes/api/notes/{note_id}' -H 'accept: application/json' -H 'x-auth-token: {user_token}' -H 'Content-Type: application/x-www-form-urlencoded' -d 'title={updated_note_title}&description={updated_note_description}&completed=true&category=a' > /tmp/update_note_response"""
@@ -816,8 +816,8 @@ def test_update_note_unauthorized_curl():
     # Generate new values for the note
     fake = Faker()
     updated_note_category = fake.random_element(elements=('Home', 'Personal', 'Work'))
-    updated_note_description = fake.sentence(3)
-    updated_note_title = fake.sentence(2)
+    updated_note_description = fake.sentence(4)
+    updated_note_title = fake.sentence(4)
 
     # cURL command to update the note by its ID
     save_output_script = f"""curl -X 'PUT' 'https://practice.expandtesting.com/notes/api/notes/{note_id}' -H 'accept: application/json' -H 'x-auth-token: @{user_token}' -H 'Content-Type: application/x-www-form-urlencoded' -d 'title={updated_note_title}&description={updated_note_description}&completed=true&category={updated_note_category}' > /tmp/update_note_response"""
@@ -1451,8 +1451,8 @@ def create_note(randomData):
     # Generate note details
     fake = Faker()
     note_category = fake.random_element(elements=('Home', 'Personal', 'Work'))
-    note_description = fake.sentence(3)
-    note_title = fake.sentence(2)
+    note_description = fake.sentence(4)
+    note_title = fake.sentence(4)
 
     # Send cURL request to create the note
     save_output_script = f"""curl -X 'POST' 'https://practice.expandtesting.com/notes/api/notes' -H 'accept: application/json' -H 'x-auth-token: {user_token}' -H 'Content-Type: application/x-www-form-urlencoded' -d 'title={note_title}&description={note_description}&category={note_category}' > /tmp/note_response"""
